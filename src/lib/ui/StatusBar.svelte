@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from './/Icon.svelte';
   import { api } from '../api/client';
   import { formatBytes, formatSpeed } from '../format';
   import { sync } from '../state/sync.svelte';
@@ -20,8 +21,8 @@
   <span class="text-emerald-600 dark:text-emerald-400">↑ {formatSpeed(s.up_info_speed ?? 0)}</span>
   <span class="ml-auto hidden text-slate-500 sm:inline">{formatBytes(s.free_space_on_disk ?? 0)} free</span>
   <button type="button" onclick={toggleAlt} aria-pressed={!!s.use_alt_speed_limits}
-    class="ml-auto rounded-full px-2.5 py-1 font-medium sm:ml-0
+    class="ml-auto inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-medium sm:ml-0
            {s.use_alt_speed_limits ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}">
-    🐢 {s.use_alt_speed_limits ? 'Alt speed on' : 'Alt speed'}
+    <Icon name="gauge" size={14} /> {s.use_alt_speed_limits ? 'Alt speed on' : 'Alt speed'}
   </button>
 </div>

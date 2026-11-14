@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '../../lib/ui/Icon.svelte';
   import { onMount } from 'svelte';
   import { api } from '../../lib/api/client';
   import type { FilePriority } from '../../lib/api/types';
@@ -62,7 +63,7 @@
         <button class="flex min-w-0 flex-1 items-center gap-2 text-left" disabled={!node.isDir}
                 onclick={() => toggle(node.path)} aria-expanded={node.isDir ? expanded.has(node.path) : undefined}>
           <span class="w-4 shrink-0 text-center text-slate-400">
-            {#if node.isDir}{expanded.has(node.path) ? '▾' : '▸'}{:else}·{/if}
+            {#if node.isDir}<Icon name={expanded.has(node.path) ? 'chevron-down' : 'chevron-right'} size={16} />{/if}
           </span>
           <span class="min-w-0 flex-1">
             <span class="block truncate text-[14px] {node.priority === 0 ? 'text-slate-400 line-through' : ''}">{node.name}</span>
@@ -85,7 +86,7 @@
   {#each PRIORITIES as p}
     <button class="flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-[15px] active:bg-slate-100 dark:active:bg-slate-800"
             onclick={() => setPriority(p.value)}>
-      {p.label}{#if target?.priority === p.value}<span class="text-sky-500">✓</span>{/if}
+      {p.label}{#if target?.priority === p.value}<span class="text-sky-500"><Icon name="check" size={16} /></span>{/if}
     </button>
   {/each}
   {#if target?.isDir}<p class="px-4 pt-1 pb-3 text-xs text-slate-500">Applies to all {target.indexes.length} files inside.</p>{/if}

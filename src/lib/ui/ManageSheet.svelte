@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from './/Icon.svelte';
   import { api } from '../api/client';
   import { sync } from '../state/sync.svelte';
   import { toast } from '../state/toast.svelte';
@@ -103,7 +104,7 @@
         {#each sync.data.tags as t (t)}
           <li class="flex items-center rounded-full border border-slate-300 pl-3 dark:border-slate-700">
             <span class="text-sm">{t}</span>
-            <button class="px-2.5 py-1.5 text-slate-500" aria-label={`Delete tag ${t}`} onclick={() => removeTag(t)}>✕</button>
+            <button class="px-2.5 py-1.5 text-slate-500" aria-label={`Delete tag ${t}`} onclick={() => removeTag(t)}><Icon name="close" size={14} /></button>
           </li>
         {:else}
           <li class="text-sm text-slate-500">No tags yet.</li>

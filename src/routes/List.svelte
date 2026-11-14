@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '../lib/ui/Icon.svelte';
   import { router } from '../lib/router.svelte';
   import { sync } from '../lib/state/sync.svelte';
   import { view } from '../lib/state/view.svelte';
@@ -37,7 +38,7 @@
   <header class="border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] dark:border-slate-800 dark:bg-slate-900">
     {#if view.selecting}
       <div class="flex items-center gap-2 px-3 py-2">
-        <button class="px-2 py-1 text-xl" onclick={() => view.clearSelection()} aria-label="Cancel selection">✕</button>
+        <button class="px-2 py-1 text-xl" onclick={() => view.clearSelection()} aria-label="Cancel selection"><Icon name="close" size={22} /></button>
         <span class="font-medium">{view.selected.size} selected</span>
         <button class="ml-auto px-2 py-1 text-sm text-sky-600 dark:text-sky-400" onclick={() => view.selectAll()}>Select all</button>
       </div>
@@ -47,10 +48,10 @@
           class="min-w-0 flex-1 rounded-lg bg-slate-100 px-3 py-2 text-base outline-none dark:bg-slate-800" />
         <button onclick={() => (filters = true)} aria-label="Filter and sort"
           class="relative rounded-lg px-3 py-2 active:bg-slate-100 dark:active:bg-slate-800">
-          ⚙︎{#if filtered}<span class="absolute top-1.5 right-1.5 size-2 rounded-full bg-sky-500"></span>{/if}
+          <Icon name="filter" />{#if filtered}<span class="absolute top-1.5 right-1.5 size-2 rounded-full bg-sky-500"></span>{/if}
         </button>
         <button onclick={() => (settingsUi.open = true)} aria-label="Settings"
-          class="rounded-lg px-3 py-2 active:bg-slate-100 dark:active:bg-slate-800">⋮</button>
+          class="rounded-lg px-3 py-2 active:bg-slate-100 dark:active:bg-slate-800"><Icon name="more-v" /></button>
       </div>
     {/if}
     <StatusBar />
@@ -83,7 +84,7 @@
 {:else}
   <button onclick={() => addUi.show()} aria-label="Add torrent"
     class="absolute right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 grid size-14 place-items-center rounded-full
-           bg-sky-600 text-3xl leading-none text-white shadow-lg active:bg-sky-700">+</button>
+           bg-sky-600 text-white shadow-lg active:bg-sky-700"><Icon name="plus" size={28} /></button>
 {/if}
 <FilterSheet open={filters} onclose={() => (filters = false)} />
 </div>

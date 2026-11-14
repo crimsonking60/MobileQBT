@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '../lib/ui/Icon.svelte';
   import { untrack } from 'svelte';
   import { api } from '../lib/api/client';
   import { formatPercent, formatSpeed, stateInfo } from '../lib/format';
@@ -39,15 +40,15 @@
   <header class="border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] dark:border-slate-800 dark:bg-slate-900">
     <div class="flex items-center gap-1 px-2 py-2">
       <button class="rounded-lg px-3 py-1.5 text-xl active:bg-slate-100 dark:active:bg-slate-800"
-              onclick={() => router.close()} aria-label="Back to list">‹</button>
+              onclick={() => router.close()} aria-label="Back to list"><Icon name="back" size={22} /></button>
       <h1 class="min-w-0 flex-1 truncate text-base font-semibold">{t?.name ?? 'Torrent'}</h1>
       {#if t}
         <button class="rounded-lg px-3 py-1.5 text-lg active:bg-slate-100 dark:active:bg-slate-800"
-                onclick={toggleRun} aria-label={stopped ? 'Start' : 'Stop'}>{stopped ? '▶' : '⏸'}</button>
+                onclick={toggleRun} aria-label={stopped ? 'Start' : 'Stop'}><Icon name={stopped ? 'play' : 'pause'} filled={stopped} /></button>
         <button class="rounded-lg px-3 py-1.5 text-lg active:bg-slate-100 dark:active:bg-slate-800"
-                onclick={() => (del = true)} aria-label="Delete">🗑</button>
+                onclick={() => (del = true)} aria-label="Delete"><Icon name="trash" /></button>
         <button class="rounded-lg px-3 py-1.5 text-lg active:bg-slate-100 dark:active:bg-slate-800"
-                onclick={() => (more = true)} aria-label="More actions">⋯</button>
+                onclick={() => (more = true)} aria-label="More actions"><Icon name="more" /></button>
       {/if}
     </div>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from './/Icon.svelte';
   import { api } from '../api/client';
   import { sync } from '../state/sync.svelte';
   import { view } from '../state/view.svelte';
@@ -21,10 +22,10 @@
 
 <nav class="absolute inset-x-0 bottom-0 z-20 flex border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)]
             dark:border-slate-800 dark:bg-slate-900" aria-label="Selection actions">
-  <button class={btn} disabled={busy} onclick={() => run(api.start)}><span class="text-lg">▶</span>Start</button>
-  <button class={btn} disabled={busy} onclick={() => run(api.stop)}><span class="text-lg">⏸</span>Stop</button>
-  <button class={btn} onclick={() => (del = true)}><span class="text-lg text-red-500">🗑</span>Delete</button>
-  <button class={btn} onclick={() => (more = true)}><span class="text-lg">⋯</span>More</button>
+  <button class={btn} disabled={busy} onclick={() => run(api.start)}><Icon name="play" filled />Start</button>
+  <button class={btn} disabled={busy} onclick={() => run(api.stop)}><Icon name="pause" />Stop</button>
+  <button class={btn} onclick={() => (del = true)}><span class="text-red-500"><Icon name="trash" /></span>Delete</button>
+  <button class={btn} onclick={() => (more = true)}><Icon name="more" />More</button>
 </nav>
 
 <ActionSheets hashes={view.selectedHashes} bind:more bind:del ondone={() => view.clearSelection()} />

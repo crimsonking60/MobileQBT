@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from './/Icon.svelte';
   import { api } from '../api/client';
   import { parseUrls } from '../add';
   import { addUi } from '../state/addui.svelte';
@@ -85,7 +86,7 @@
             <li class="flex items-center justify-between gap-2 rounded-lg bg-slate-100 px-3 py-1.5 dark:bg-slate-800">
               <span class="truncate">{f.name}</span>
               <button type="button" class="px-1 text-slate-500" aria-label="Remove {f.name}"
-                      onclick={() => (files = files.filter((_, j) => j !== i))}>✕</button>
+                      onclick={() => (files = files.filter((_, j) => j !== i))}><Icon name="close" size={16} /></button>
             </li>
           {/each}
         </ul>
