@@ -2,6 +2,7 @@
   import { router } from '../lib/router.svelte';
   import { sync } from '../lib/state/sync.svelte';
   import { view } from '../lib/state/view.svelte';
+  import { addUi } from '../lib/state/addui.svelte';
   import ActionBar from '../lib/ui/ActionBar.svelte';
   import FilterSheet from '../lib/ui/FilterSheet.svelte';
   import StatusBar from '../lib/ui/StatusBar.svelte';
@@ -59,7 +60,7 @@
   {:else if list.length === 0}
     <p class="p-6 text-center text-slate-500">{total === 0 ? 'No torrents yet.' : 'No torrents match.'}</p>
   {:else}
-    <div bind:this={scroller} class="flex-1 overflow-y-auto overscroll-contain {view.selecting ? 'pb-16' : ''}"
+    <div bind:this={scroller} class="flex-1 overflow-y-auto overscroll-contain pb-20"
          onscroll={() => (scrollTop = view.scrollTop = scroller!.scrollTop)} bind:clientHeight={height}>
       <div style:height="{list.length * ROW_H}px" class="relative">
         <div style:transform="translateY({start * ROW_H}px)">
@@ -74,6 +75,12 @@
     </div>
   {/if}
 
-{#if view.selecting}<ActionBar />{/if}
+{#if view.selecting}
+  <ActionBar />
+{:else}
+  <button onclick={() => addUi.show()} aria-label="Add torrent"
+    class="absolute right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 grid size-14 place-items-center rounded-full
+           bg-sky-600 text-3xl leading-none text-white shadow-lg active:bg-sky-700">+</button>
+{/if}
 <FilterSheet open={filters} onclose={() => (filters = false)} />
 </div>

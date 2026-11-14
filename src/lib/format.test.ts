@@ -32,5 +32,6 @@ describe('niceSpeedMax', () => {
     expect(niceSpeedMax(1.3 * 1024 ** 2)).toBe(2 * 1024 ** 2);
     expect(niceSpeedMax(300 * 1024)).toBe(500 * 1024);
     expect(niceSpeedMax(0)).toBe(1024);
+    expect(niceSpeedMax(800 * 1024)).toBe(1024 ** 2); // not "1000 KiB/s"
   });
 });

@@ -3,6 +3,9 @@
   import { router } from './lib/router.svelte';
   import { media } from './lib/state/media.svelte';
   import { sync } from './lib/state/sync.svelte';
+  import { addUi } from './lib/state/addui.svelte';
+  import AddSheet from './lib/ui/AddSheet.svelte';
+  import Toast from './lib/ui/Toast.svelte';
   import Detail from './routes/Detail.svelte';
   import List from './routes/List.svelte';
   import Login from './routes/Login.svelte';
@@ -31,3 +34,6 @@
 {:else}
   <div class="h-dvh"><List /></div>
 {/if}
+
+{#if sync.phase !== 'unauthenticated'}<AddSheet open={addUi.open} onclose={() => (addUi.open = false)} />{/if}
+<Toast />

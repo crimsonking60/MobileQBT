@@ -16,4 +16,6 @@ services:
     volumes:
       - ./dev/qbt/config:/config
       - ./dev/qbt/downloads:/downloads
+      # alt-WebUI build (npm run package); enable it in qBittorrent with path /webui
+      - ./release/mobileqbt-webui:/webui:ro
     restart: unless-stopped

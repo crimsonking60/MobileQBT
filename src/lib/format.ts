@@ -100,5 +100,6 @@ export function niceSpeedMax(v: number): number {
   const unit = 1024 ** Math.floor(Math.log(v) / Math.log(1024));
   const scaled = v / unit;
   const p = 10 ** Math.floor(Math.log10(scaled));
-  return ([1, 2, 5, 10].find((m) => m * p >= scaled) ?? 10) * p * unit;
+  const nice = ([1, 2, 5, 10].find((m) => m * p >= scaled) ?? 10) * p;
+  return (nice >= 1000 ? 1024 : nice) * unit; // 1000 KiB/s -> 1 MiB/s
 }

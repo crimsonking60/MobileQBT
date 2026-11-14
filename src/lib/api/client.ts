@@ -23,6 +23,23 @@ function form(data: Record<string, string | number | boolean>): RequestInit {
 
 const hashes = (h: string[]) => h.join('|');
 
+export interface AddResult { added: number; failed: number }
+
+/** 5.x answers with JSON counts; older builds with "Ok." / "Fails.". */
+export function parseAddResult(text: string): AddResult {
+  const t = text.trim();
+  if (t === 'Fails.') throw new ApiError(400, 'qBittorrent rejected the torrent');
+  try {
+    const j = JSON.parse(t) as { success_count?: number; failure_count?: number };
+    const added = j.success_count ?? 0, failed = j.failure_count ?? 0;
+    if (added === 0 && failed > 0) throw new ApiError(400, 'qBittorrent rejected the torrent');
+    return { added, failed };
+  } catch (e) {
+    if (e instanceof ApiError) throw e;
+    return { added: 1, failed: 0 }; // "Ok."
+  }
+}
+
 export const api = {
   /** Resolves true on success; qBittorrent answers 200 "Fails." on bad credentials. */
   async login(username: string, password: string): Promise<boolean> {
@@ -75,9 +92,11 @@ export const api = {
     request('torrents/filePrio', form({ hash, id: ids.join('|'), priority })),
   rename: (hash: string, name: string) => request('torrents/rename', form({ hash, name })),
 
+  defaultSavePath: async () => (await request('app/defaultSavePath')).text(),
+
   toggleAltSpeed: () => request('transfer/toggleSpeedLimitsMode', { method: 'POST' }),
 
-  async add(opts: AddTorrentOptions) {
+  async add(opts: AddTorrentOptions): Promise<AddResult> {
     const body = new FormData();
     if (opts.urls) body.set('urls', opts.urls);
     for (const f of opts.files ?? []) body.append('torrents', f, f.name);
@@ -87,7 +106,7 @@ export const api = {
     if (opts.stopped) body.set('stopped', 'true');
     if (opts.sequentialDownload) body.set('sequentialDownload', 'true');
     if (opts.firstLastPiecePrio) body.set('firstLastPiecePrio', 'true');
-    const res = await request('torrents/add', { method: 'POST', body });
-    if ((await res.text()).trim() === 'Fails.') throw new ApiError(400, 'qBittorrent rejected the torrent');
+    const text = (await request('torrents/add', { method: 'POST', body })).text();
+    return parseAddResult(await text);
   },
 };
