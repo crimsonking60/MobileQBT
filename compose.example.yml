@@ -2,8 +2,8 @@
 # Put your usual HTTPS reverse proxy / tunnel in front of port 8081 (HTTPS is needed to install the app).
 services:
   mobileqbt:
-    build: .
-    # image: your-registry/mobileqbt   # once you've pushed a build somewhere
+    image: ghcr.io/crimsonking60/mobileqbt:latest   # or pin e.g. :2026.11.1
+    # build: .                                      # to build from a checkout instead
     restart: unless-stopped
     environment:
       QBT_URL: http://qbittorrent:8080   # your qBittorrent WebUI; origin only, no path

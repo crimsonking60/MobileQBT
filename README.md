@@ -19,10 +19,17 @@ the heavy stuff and use this one on phones and tablets.
 
 ### Docker (recommended)
 
+Every change merged to `main` is released automatically (see [Releases](#releases)); pull the image:
+
 ```sh
-docker build -t mobileqbt .
-docker run -d --name mobileqbt -p 8081:80 -e QBT_URL=http://qbittorrent:8080 mobileqbt
+docker run -d --name mobileqbt -p 8081:80 -e QBT_URL=http://qbittorrent:8080 \
+  ghcr.io/crimsonking60/mobileqbt:latest
 ```
+
+Pin a version (`ghcr.io/crimsonking60/mobileqbt:2026.11.1`) if you'd rather upgrade deliberately. Images are
+`linux/amd64` and `linux/arm64`. While the repository is private the package is too: either make it public
+(package settings on GitHub) or `docker login ghcr.io` with a token that has `read:packages`. To build
+locally instead: `docker build -t mobileqbt .`.
 
 or use [`compose.example.yml`](compose.example.yml). `QBT_URL` is your qBittorrent WebUI's address as seen
 from the container (origin only, no path; `https://` works too). Open `http://<host>:8081` and sign in with
@@ -62,6 +69,15 @@ worker (instant start, offline app shell), notifications, the `magnet:` link han
 Android Chrome. A self-signed certificate only helps if each device trusts its CA (e.g. via `mkcert`);
 otherwise browsers treat the site as untrusted and keep those features off. Tailscale's `tailscale serve`
 is an easy way to get a trusted certificate without opening any ports.
+
+## Releases
+
+Versions are calendar based, `YYYY.MM.N`, where N counts releases within the month (`2026.11.1`,
+`2026.11.2`, then `2026.12.1`). The [release workflow](.github/workflows/release.yml) runs on every push to
+`main` (except docs- and test-only changes): it type-checks and runs the unit tests, builds the multi-arch
+image, pushes it to `ghcr.io` as both the version and `latest`, then tags that commit and creates a GitHub
+release with generated notes. Nothing is tagged if the checks or the build fail. It can also be started by
+hand from the Actions tab.
 
 ## Develop
 
