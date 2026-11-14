@@ -60,7 +60,7 @@
 
   const input = 'min-w-0 flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-base dark:border-slate-700';
   const h = 'mb-2 text-xs font-medium tracking-wide text-slate-500 uppercase';
-  const iconBtn = 'rounded-lg px-3 py-2 text-sm text-slate-500 active:bg-slate-100 dark:active:bg-slate-800';
+  const iconBtn = 'rounded-lg px-3 py-2 text-sm active:bg-slate-100 dark:active:bg-slate-800';
 </script>
 
 <Sheet {open} title="Categories & tags" {onclose}>
@@ -74,8 +74,8 @@
               <div class="truncate text-[15px]">{c.name}</div>
               {#if c.savePath}<div class="truncate text-xs text-slate-500">{c.savePath}</div>{/if}
             </div>
-            <button class={iconBtn} aria-label={`Edit ${c.name}`} onclick={() => startEdit(c.name, c.savePath)}>Edit</button>
-            <button class={`${iconBtn} text-red-600`} aria-label={`Delete category ${c.name}`}
+            <button class="{iconBtn} text-sky-600 dark:text-sky-400" aria-label={`Edit ${c.name}`} onclick={() => startEdit(c.name, c.savePath)}>Edit</button>
+            <button class="{iconBtn} text-red-600 dark:text-red-400" aria-label={`Delete category ${c.name}`}
               onclick={() => removeCategory(c.name)}>Delete</button>
           </li>
         {:else}

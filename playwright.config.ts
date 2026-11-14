@@ -10,8 +10,16 @@ export default defineConfig({
   testDir: 'tests',
   use: { baseURL: external ?? 'http://localhost:5199' },
   projects: [
-    { name: 'phone', testIgnore: /wide/, use: { ...devices['Pixel 7'] } },
+    { name: 'phone', testIgnore: /wide|audit/, use: { ...devices['Pixel 7'] } },
     { name: 'tablet', testMatch: /wide/, use: { ...devices['iPad (gen 7) landscape'], defaultBrowserType: 'chromium' } },
+    // visual audit (AUDIT=1 npx playwright test audit): screenshots of every screen, light and dark
+    ...(process.env.AUDIT
+      ? [
+          { name: 'audit-phone', testMatch: /audit/, use: { ...devices['Pixel 7'], deviceScaleFactor: 1 } },
+          { name: 'audit-tablet', testMatch: /audit/, use: { ...devices['iPad (gen 7) landscape'], defaultBrowserType: 'chromium' as const, deviceScaleFactor: 1 } },
+          { name: 'audit-tablet-portrait', testMatch: /audit/, use: { ...devices['iPad (gen 7)'], defaultBrowserType: 'chromium' as const, deviceScaleFactor: 1 } },
+        ]
+      : []),
   ],
   webServer: external
     ? undefined

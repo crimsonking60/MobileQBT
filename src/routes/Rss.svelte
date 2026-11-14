@@ -45,6 +45,7 @@
   </header>
 
   <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]" role="tabpanel">
+   <div class="mx-auto w-full max-w-3xl">
     {#if !poll.loaded}
       <p class="p-6 text-center text-slate-500">Loading…</p>
     {:else if poll.error && !poll.data}
@@ -53,5 +54,6 @@
     {:else if tab === 'feeds'}<Feeds {feeds} onchange={() => poll.refresh()} />
     {:else}<Rules {feeds} />
     {/if}
+   </div>
   </div>
 </div>

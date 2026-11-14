@@ -18,6 +18,8 @@
     4: { label: 'Not working', cls: 'bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-200' },
   };
 
+  const trackerCount = $derived(poll.data?.filter((t) => !isPseudo(t)).length ?? 0);
+
   // DHT / PeX / LSD show up as pseudo-trackers whose url starts with "**"
   const isPseudo = (t: Tracker) => t.url.startsWith('**');
   const count = (n: number) => (n < 0 ? '–' : n);
@@ -30,7 +32,7 @@
 </script>
 
 <div class="flex items-center justify-between px-4 py-3">
-  <span class="text-sm text-slate-500">{poll.data?.filter((t) => !isPseudo(t)).length ?? 0} trackers</span>
+  <span class="text-sm text-slate-500">{trackerCount} tracker{trackerCount === 1 ? '' : 's'}</span>
   <button class="rounded-lg bg-slate-100 px-3 py-1.5 text-sm active:bg-slate-200 dark:bg-slate-800 dark:active:bg-slate-700"
     onclick={reannounce}>Reannounce</button>
 </div>

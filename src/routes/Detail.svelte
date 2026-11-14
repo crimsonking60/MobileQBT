@@ -4,6 +4,7 @@
   import { api } from '../lib/api/client';
   import { formatPercent, formatSpeed, stateInfo } from '../lib/format';
   import { router, TABS } from '../lib/router.svelte';
+  import { media } from '../lib/state/media.svelte';
   import { SpeedHistory } from '../lib/state/history.svelte';
   import { sync } from '../lib/state/sync.svelte';
   import ActionSheets from '../lib/ui/ActionSheets.svelte';
@@ -41,7 +42,8 @@
   <header class="border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] dark:border-slate-800 dark:bg-slate-900">
     <div class="flex items-center gap-1 px-2 py-2">
       <button class="rounded-lg px-3 py-1.5 text-xl active:bg-slate-100 dark:active:bg-slate-800"
-              onclick={() => router.close()} aria-label="Back to list"><Icon name="back" size={22} /></button>
+              onclick={() => router.close()} aria-label={media.wide ? 'Close torrent' : 'Back to list'}>
+        <Icon name={media.wide ? 'close' : 'back'} size={22} /></button>
       <h1 class="min-w-0 flex-1 truncate text-base font-semibold">{t?.name ?? 'Torrent'}</h1>
       {#if t}
         <button class="rounded-lg px-3 py-1.5 text-lg active:bg-slate-100 dark:active:bg-slate-800"
@@ -75,6 +77,7 @@
   </header>
 
   <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]" role="tabpanel">
+    <div class="mx-auto w-full max-w-3xl">
     {#if !t}
       <p class="p-6 text-center text-slate-500">
         {sync.phase === 'ready' ? 'This torrent no longer exists.' : 'Loading…'}
@@ -85,6 +88,7 @@
     {:else if router.tab === 'files'}<Files {hash} />
     {:else}<Speed {history} />
     {/if}
+    </div>
   </div>
 </div>
 
