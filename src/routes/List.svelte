@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import Icon from '../lib/ui/Icon.svelte';
   import { router } from '../lib/router.svelte';
   import { sync } from '../lib/state/sync.svelte';
@@ -25,6 +26,18 @@
 
   const filtered = $derived(view.status !== 'all' || view.category !== null || view.tag !== null);
   const total = $derived(Object.keys(sync.data.torrents).length);
+
+  // keep the keyboard cursor in view (the list is virtualized, so compute from the index)
+  $effect(() => {
+    const cursor = view.cursor; // only re-run when the cursor moves, not on every poll
+    untrack(() => {
+      const i = list.findIndex((t) => t.hash === cursor);
+      if (i < 0 || !scroller) return;
+      const top = i * ROW_H;
+      if (top < scroller.scrollTop) scroller.scrollTop = top;
+      else if (top + ROW_H > scroller.scrollTop + scroller.clientHeight) scroller.scrollTop = top + ROW_H - scroller.clientHeight;
+    });
+  });
 
   let restored = false;
   $effect(() => {
@@ -71,7 +84,7 @@
           {#each slice as t (t.hash)}
             <div style:height="{ROW_H}px">
               <TorrentRow {t} selecting={view.selecting} selected={view.selected.has(t.hash)}
-                active={router.torrent === t.hash} ontap={() => router.open(t.hash)} onselect={() => view.toggle(t.hash)} />
+                active={router.torrent === t.hash} cursor={view.cursor === t.hash} ontap={() => router.open(t.hash)} onselect={() => view.toggle(t.hash)} />
             </div>
           {/each}
         </div>

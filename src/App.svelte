@@ -8,6 +8,7 @@
   import SettingsSheet from './lib/ui/SettingsSheet.svelte';
   import { clampSplit, split } from './lib/state/split.svelte';
   import Splitter from './lib/ui/Splitter.svelte';
+  import Shortcuts from './lib/ui/Shortcuts.svelte';
   import AddSheet from './lib/ui/AddSheet.svelte';
   import Toast from './lib/ui/Toast.svelte';
   import Detail from './routes/Detail.svelte';
@@ -46,6 +47,7 @@
 
 {#if sync.phase !== 'unauthenticated'}
   <AddSheet open={addUi.open} onclose={() => (addUi.open = false)} />
+  <Shortcuts />
   <SettingsSheet open={settingsUi.open} onclose={() => (settingsUi.open = false)} />
 {/if}
 <Toast />

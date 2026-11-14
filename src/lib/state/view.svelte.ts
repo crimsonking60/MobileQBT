@@ -25,6 +25,8 @@ class ViewState {
   sortKey = $state<SortKey>('added_on');
   sortDesc = $state(true);
   selected = $state<Set<string>>(new Set());
+  /** keyboard cursor: the row shortcuts act on when nothing is selected */
+  cursor = $state<string | null>(null);
   /** list scroll offset, restored when returning from a detail view */
   scrollTop = 0;
 

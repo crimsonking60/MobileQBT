@@ -3,6 +3,7 @@
   import {
     bytesToKiB, diffPrefs, fromTime, kibToBytes, pickPrefs, SCHEDULER_DAYS, toTime, type Prefs,
   } from '../prefs';
+  import { actionUi } from '../state/actionui.svelte';
   import { sync } from '../state/sync.svelte';
   import { toast } from '../state/toast.svelte';
   import Sheet from './Sheet.svelte';
@@ -138,6 +139,8 @@
 
       <button class="w-full rounded-lg bg-sky-600 py-2.5 font-medium text-white disabled:opacity-50"
         disabled={!dirty || busy} onclick={save}>Save</button>
+      <button class="hidden w-full text-center text-sm text-sky-600 md:block dark:text-sky-400"
+        onclick={() => { onclose(); actionUi.help = true; }}>Keyboard shortcuts</button>
     {:else if !error}
       <p class="py-6 text-center text-slate-500">Loading…</p>
     {/if}
