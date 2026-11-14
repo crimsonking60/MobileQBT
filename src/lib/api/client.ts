@@ -73,6 +73,14 @@ export const api = {
     request('torrents/addTags', form({ hashes: hashes(h), tags: tags.join(',') })),
   removeTags: (h: string[], tags: string[]) =>
     request('torrents/removeTags', form({ hashes: hashes(h), tags: tags.join(',') })),
+  createCategory: (category: string, savePath = '') =>
+    request('torrents/createCategory', form({ category, savePath })),
+  editCategory: (category: string, savePath: string) =>
+    request('torrents/editCategory', form({ category, savePath })),
+  removeCategories: (names: string[]) =>
+    request('torrents/removeCategories', form({ categories: names.join('\n') })),
+  createTags: (tags: string[]) => request('torrents/createTags', form({ tags: tags.join(',') })),
+  deleteTags: (tags: string[]) => request('torrents/deleteTags', form({ tags: tags.join(',') })),
   priority: (h: string[], op: 'topPrio' | 'bottomPrio' | 'increasePrio' | 'decreasePrio') =>
     request(`torrents/${op}`, form({ hashes: hashes(h) })),
 

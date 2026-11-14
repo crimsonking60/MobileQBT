@@ -2,10 +2,12 @@
   import { STATUS_FILTERS } from '../format';
   import { sync } from '../state/sync.svelte';
   import { SORT_KEYS, view } from '../state/view.svelte';
+  import ManageSheet from './ManageSheet.svelte';
   import Sheet from './Sheet.svelte';
 
   let { open, onclose }: { open: boolean; onclose: () => void } = $props();
 
+  let manage = $state(false);
   const categories = $derived(Object.keys(sync.data.categories).sort());
   const counts = $derived.by(() => {
     const c = { uncategorized: 0 } as Record<string, number>;
@@ -70,6 +72,12 @@
       </button>
     </section>
 
+    <button class="text-sm text-sky-600 dark:text-sky-400" onclick={() => (manage = true)}>
+      Manage categories & tags…
+    </button>
+
     <button class="w-full rounded-lg bg-sky-600 py-2.5 font-medium text-white" onclick={onclose}>Done</button>
   </div>
 </Sheet>
+
+<ManageSheet open={manage} onclose={() => (manage = false)} />
