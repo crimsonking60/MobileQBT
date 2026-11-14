@@ -6,11 +6,15 @@
   import { addUi } from './lib/state/addui.svelte';
   import { settingsUi } from './lib/state/settingsui.svelte';
   import SettingsSheet from './lib/ui/SettingsSheet.svelte';
+  import { clampSplit, split } from './lib/state/split.svelte';
+  import Splitter from './lib/ui/Splitter.svelte';
   import AddSheet from './lib/ui/AddSheet.svelte';
   import Toast from './lib/ui/Toast.svelte';
   import Detail from './routes/Detail.svelte';
   import List from './routes/List.svelte';
   import Login from './routes/Login.svelte';
+
+  let innerWidth = $state(typeof window === 'undefined' ? 1024 : window.innerWidth);
 
   onMount(() => {
     sync.start();
@@ -18,11 +22,14 @@
   });
 </script>
 
+<svelte:window bind:innerWidth />
+
 {#if sync.phase === 'unauthenticated'}
   <Login />
 {:else if media.wide}
   <div class="flex h-dvh">
-    <aside class="w-[26rem] shrink-0 border-r border-slate-200 dark:border-slate-800"><List /></aside>
+    <aside class="shrink-0" style:width="{clampSplit(split.width, innerWidth)}px"><List /></aside>
+    <Splitter />
     <section class="min-w-0 flex-1">
       {#if router.torrent}
         {#key router.torrent}<Detail hash={router.torrent} />{/key}
