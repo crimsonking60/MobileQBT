@@ -1,9 +1,12 @@
 import { api, ApiError } from '../api/client';
 import { applyMainData, emptyState, type SyncState } from './merge';
+import { notifier } from './notify.svelte';
 
 export type Phase = 'idle' | 'loading' | 'ready' | 'unauthenticated' | 'error';
 
 const INTERVAL_MS = 2000;
+/** with notifications on we keep polling in a hidden tab, just less often */
+const HIDDEN_INTERVAL_MS = 15000;
 
 /** Polls sync/maindata and exposes the merged state reactively. */
 class SyncStore {
@@ -43,15 +46,17 @@ class SyncStore {
   }
 
   #onVisibility = () => {
-    if (document.hidden) clearTimeout(this.#timer);
-    else this.refresh();
+    if (document.hidden && !notifier.enabled) clearTimeout(this.#timer);
+    else if (!document.hidden) this.refresh();
   };
 
   async #tick() {
     if (!this.#running) return;
     try {
       const d = await api.maindata(this.data.rid);
+      const before = this.phase === 'ready' ? this.data.torrents : null;
       this.data = applyMainData(this.data, d);
+      if (before) notifier.check(before, this.data.torrents);
       this.phase = 'ready';
       this.error = null;
     } catch (e) {
@@ -62,7 +67,9 @@ class SyncStore {
       this.error = e instanceof Error ? e.message : String(e);
       if (this.phase !== 'ready') this.phase = 'error';
     }
-    if (this.#running && !document.hidden) this.#timer = setTimeout(() => this.#tick(), INTERVAL_MS);
+    if (!this.#running) return;
+    if (!document.hidden) this.#timer = setTimeout(() => this.#tick(), INTERVAL_MS);
+    else if (notifier.enabled) this.#timer = setTimeout(() => this.#tick(), HIDDEN_INTERVAL_MS);
   }
 }
 

@@ -5,9 +5,12 @@ test.use({ hasTouch: false });
 
 test('keyboard: navigate, select, open, tabs, help', async ({ page }) => {
   await login(page);
+  // narrow to the stable fixtures so torrents added by parallel e2e tests can't shift the rows
+  await page.getByPlaceholder(/Search/).fill('Test.Torrent.Number');
+  await expect(page.getByText('Test.Torrent.Number.2')).toBeVisible(); // list rendered before we use keys
+  await page.evaluate(() => (document.activeElement as HTMLElement).blur()); // keys are shortcuts again
   await page.keyboard.press('j');
   await page.keyboard.press('j');
-  // second row (Sample.Show.S01 sorted by date added desc may vary) - just assert one ring exists and moves
   const rows = page.locator('button.ring-2');
   await expect(rows).toHaveCount(1);
   const first = await rows.innerText();

@@ -4,6 +4,7 @@
     bytesToKiB, diffPrefs, fromTime, kibToBytes, pickPrefs, SCHEDULER_DAYS, toTime, type Prefs,
   } from '../prefs';
   import { actionUi } from '../state/actionui.svelte';
+  import { notifier } from '../state/notify.svelte';
   import { sync } from '../state/sync.svelte';
   import { toast } from '../state/toast.svelte';
   import Sheet from './Sheet.svelte';
@@ -68,6 +69,28 @@
 <Sheet {open} title="Settings" {onclose}>
   <div class="space-y-6 px-4 pb-4">
     {#if error}<p class="text-sm text-red-500" role="alert">{error}</p>{/if}
+    <section>
+      <h3 class={h}>Notifications <span class="font-normal normal-case">(this device)</span></h3>
+      {#if !notifier.supported}
+        <p class="text-sm text-slate-500">This browser doesn't support notifications. On iPhone and iPad, install the app to the Home Screen first.</p>
+      {:else}
+        <label class={rowCls}>
+          <span class="text-[15px]">Notify on finish or error</span>
+          <input type="checkbox" class="size-5" checked={notifier.enabled && notifier.permission === 'granted'}
+            onchange={async (e) => {
+              const el = e.currentTarget; // gone after the await
+              if (el.checked) { if (!(await notifier.enable())) el.checked = false; }
+              else notifier.disable();
+            }} />
+        </label>
+        {#if notifier.permission === 'denied'}
+          <p class="text-sm text-amber-600 dark:text-amber-400">Notifications are blocked for this site. Allow them in the browser's site settings.</p>
+        {:else}
+          <p class="text-xs text-slate-500">Works while the app stays open or in the background. Closed apps can't be notified without a push server.</p>
+        {/if}
+      {/if}
+    </section>
+
     {#if cur}
       <section>
         <h3 class={h}>Speed limits <span class="font-normal normal-case">(0 = unlimited)</span></h3>

@@ -1,5 +1,5 @@
 // App-shell cache so the installed app opens instantly. Never touches the qBittorrent API.
-const CACHE = 'mobileqbt-v1';
+const CACHE = 'mobileqbt-v2';
 
 self.addEventListener('install', () => self.skipWaiting());
 
@@ -25,5 +25,19 @@ self.addEventListener('fetch', (e) => {
     // pages: network first so updates land immediately; hashed assets: cache first
     if (req.mode === 'navigate') return (await fetched) ?? hit ?? Response.error();
     return hit ?? (await fetched) ?? Response.error();
+  })());
+});
+
+// Tapping a notification brings the app forward on that torrent.
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const hash = e.notification.data && e.notification.data.hash;
+  const target = new URL(hash ? `./#/torrent/${hash}` : './', self.registration.scope).href;
+  e.waitUntil((async () => {
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of clients) {
+      if ('focus' in c) { await c.focus(); if ('navigate' in c) await c.navigate(target).catch(() => {}); return; }
+    }
+    await self.clients.openWindow(target);
   })());
 });

@@ -10,12 +10,12 @@ test('login, list, select', async ({ page }, info) => {
 
   await page.getByLabel('Password').fill('mobileqbt-dev');
   await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(page.getByText('Test.Torrent.Number.1')).toBeVisible();
+  await expect(page.getByText('Test.Torrent.Number.2')).toBeVisible();
   await page.screenshot({ path: `${SHOTS}/list.png` });
 
   // search narrows the list
   await page.getByPlaceholder(/Search/).fill('Number.3');
-  await expect(page.getByText('Test.Torrent.Number.1')).toBeHidden();
+  await expect(page.getByText('Test.Torrent.Number.2')).toBeHidden();
   await page.getByPlaceholder(/Search/).fill('');
 
   // long-press enters selection mode
