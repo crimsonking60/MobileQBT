@@ -6,7 +6,7 @@
   import { sync } from '../../lib/state/sync.svelte';
   import Kv from '../../lib/ui/Kv.svelte';
 
-  let { hash }: { hash: string } = $props();
+  let { hash, onedittags }: { hash: string; onedittags?: () => void } = $props();
 
   const poll = new Poll(() => api.properties(hash));
   onMount(() => poll.stop);
@@ -41,8 +41,8 @@
     <h3 class={h}>Torrent</h3>
     <Kv label="Save path" value={p?.save_path ?? t.save_path} mono />
     <Kv label="Size" value={formatBytes(t.size)} />
-    <Kv label="Category" value={t.category || '–'} />
-    <Kv label="Tags" value={t.tags || '–'} />
+    <Kv label="Category" value={t.category || 'None'} edit onclick={onedittags} />
+    <Kv label="Tags" value={t.tags || 'None'} edit onclick={onedittags} />
     <Kv label="Tracker" value={t.tracker || '–'} mono />
     {#if p}
       <Kv label="Pieces" value="{p.pieces_have} / {p.pieces_num} × {formatBytes(p.piece_size)}" />

@@ -7,6 +7,7 @@
 
   let more = $state(false);
   let del = $state(false);
+  let tagging = $state(false);
   let busy = $state(false);
 
   async function run(fn: (h: string[]) => Promise<unknown>) {
@@ -28,4 +29,4 @@
   <button class={btn} onclick={() => (more = true)}><Icon name="more" />More</button>
 </nav>
 
-<ActionSheets hashes={view.selectedHashes} bind:more bind:del ondone={() => view.clearSelection()} />
+<ActionSheets hashes={view.selectedHashes} bind:more bind:del bind:tagging ondone={() => view.clearSelection()} />

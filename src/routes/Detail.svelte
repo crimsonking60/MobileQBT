@@ -29,6 +29,7 @@
 
   let more = $state(false);
   let del = $state(false);
+  let tagging = $state(false);
 
   async function toggleRun() {
     await (stopped ? api.start([hash]) : api.stop([hash]));
@@ -78,7 +79,7 @@
       <p class="p-6 text-center text-slate-500">
         {sync.phase === 'ready' ? 'This torrent no longer exists.' : 'Loading…'}
       </p>
-    {:else if router.tab === 'general'}<General {hash} />
+    {:else if router.tab === 'general'}<General {hash} onedittags={() => (tagging = true)} />
     {:else if router.tab === 'trackers'}<Trackers {hash} />
     {:else if router.tab === 'peers'}<Peers {hash} />
     {:else if router.tab === 'files'}<Files {hash} />
@@ -87,4 +88,4 @@
   </div>
 </div>
 
-<ActionSheets hashes={t ? [hash] : []} bind:more bind:del ondeleted={() => router.close()} />
+<ActionSheets hashes={t ? [hash] : []} bind:more bind:del bind:tagging ondeleted={() => router.close()} />

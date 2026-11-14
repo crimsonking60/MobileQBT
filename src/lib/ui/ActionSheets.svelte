@@ -1,11 +1,12 @@
 <script lang="ts">
   import { api } from '../api/client';
   import { sync } from '../state/sync.svelte';
+  import { toast } from '../state/toast.svelte';
   import Sheet from './Sheet.svelte';
 
   /** "More" and "Delete" sheets for a set of torrents; shared by the list action bar and the detail view. */
-  let { hashes, more = $bindable(false), del = $bindable(false), ondone, ondeleted }: {
-    hashes: string[]; more?: boolean; del?: boolean;
+  let { hashes, more = $bindable(false), del = $bindable(false), tagging = $bindable(false), ondone, ondeleted }: {
+    hashes: string[]; more?: boolean; del?: boolean; tagging?: boolean;
     /** after any action completes */
     ondone?: () => void;
     /** after torrents were removed */
@@ -20,6 +21,13 @@
   const n = $derived(hashes.length);
   const single = $derived(n === 1 ? sync.data.torrents[hashes[0]] : undefined);
   const categories = $derived(Object.keys(sync.data.categories).sort());
+  const selected = $derived(hashes.map((h) => sync.data.torrents[h]).filter(Boolean));
+  /** the category shared by every selected torrent, or null when they differ */
+  const currentCategory = $derived(
+    selected.length && selected.every((t) => t.category === selected[0].category) ? selected[0].category : null,
+  );
+  const hasTag = (tag: string) =>
+    selected.length > 0 && selected.every((t) => t.tags.split(',').map((x) => x.trim()).includes(tag));
 
   async function run(fn: (h: string[]) => Promise<unknown>, removed = false) {
     if (!n || busy) return;
@@ -32,6 +40,22 @@
       if (removed) ondeleted?.();
     } finally { busy = false; }
   }
+
+  /** Category and tag edits keep their sheet open and confirm with a toast, so the change is visible. */
+  async function edit(fn: (h: string[]) => Promise<unknown>, message: string) {
+    if (!n || busy) return;
+    busy = true;
+    try {
+      await fn(hashes);
+      sync.refresh();
+      toast.show(message);
+    } catch (e) {
+      toast.show(e instanceof Error ? e.message : 'Request failed');
+    } finally { busy = false; }
+  }
+
+  const chip = (on: boolean) =>
+    `rounded-full border px-3 py-1.5 text-sm ${on ? 'border-sky-500 bg-sky-500 text-white' : 'border-slate-300 dark:border-slate-700'}`;
 
   const row = 'w-full rounded-lg px-4 py-3 text-left text-[15px] active:bg-slate-100 dark:active:bg-slate-800';
   const input = 'min-w-0 flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-base dark:border-slate-700';
@@ -53,18 +77,39 @@
     </form>
   {/if}
 
-  <h3 class="px-4 pt-3 pb-1 text-xs font-medium tracking-wide text-slate-500 uppercase">Set category</h3>
-  <button class={row} onclick={() => run((h) => api.setCategory(h, ''))}>None</button>
-  {#each categories as c}
-    <button class={row} onclick={() => run((h) => api.setCategory(h, c))}>{c}</button>
-  {/each}
+  <button class={row} onclick={() => { more = false; tagging = true; }}>Category &amp; tags…</button>
+</Sheet>
 
-  <h3 class="px-4 pt-3 pb-1 text-xs font-medium tracking-wide text-slate-500 uppercase">Add tag</h3>
-  <form class="flex gap-2 px-4 pb-2"
-    onsubmit={(e) => { e.preventDefault(); const t = newTag.trim(); if (t) { run((h) => api.addTags(h, [t])); newTag = ''; } }}>
-    <input bind:value={newTag} placeholder="tag" class={input} />
-    <button class="rounded-lg bg-sky-600 px-4 text-white">Add</button>
-  </form>
+<Sheet open={tagging} title="Category & tags" onclose={() => (tagging = false)}>
+  <div class="space-y-5 px-4 pb-4">
+    <section>
+      <h3 class="mb-2 text-xs font-medium tracking-wide text-slate-500 uppercase">Category</h3>
+      <div class="flex flex-wrap gap-2">
+        <button class={chip(currentCategory === '')} aria-pressed={currentCategory === ''}
+          onclick={() => edit((h) => api.setCategory(h, ''), 'Category cleared')}>None</button>
+        {#each categories as c}
+          <button class={chip(currentCategory === c)} aria-pressed={currentCategory === c}
+            onclick={() => edit((h) => api.setCategory(h, c), `Category: ${c}`)}>{c}</button>
+        {/each}
+      </div>
+      {#if !categories.length}<p class="mt-2 text-sm text-slate-500">No categories yet. Create one under Filter → Manage.</p>{/if}
+    </section>
+    <section>
+      <h3 class="mb-2 text-xs font-medium tracking-wide text-slate-500 uppercase">Tags</h3>
+      <div class="mb-3 flex flex-wrap gap-2">
+        {#each sync.data.tags as t}
+          <button class={chip(hasTag(t))} aria-pressed={hasTag(t)}
+            onclick={() => hasTag(t) ? edit((h) => api.removeTags(h, [t]), `Removed tag ${t}`) : edit((h) => api.addTags(h, [t]), `Added tag ${t}`)}>{t}</button>
+        {/each}
+      </div>
+      <form class="flex gap-2"
+        onsubmit={(e) => { e.preventDefault(); const t = newTag.trim(); if (t) { edit((h) => api.addTags(h, [t]), `Added tag ${t}`); newTag = ''; } }}>
+        <input bind:value={newTag} placeholder="New tag" aria-label="New tag" class={input} />
+        <button class="rounded-lg bg-sky-600 px-4 text-white">Add</button>
+      </form>
+    </section>
+    <button class="w-full rounded-lg bg-sky-600 py-2.5 font-medium text-white" onclick={() => (tagging = false)}>Done</button>
+  </div>
 </Sheet>
 
 <Sheet open={del} title="Delete {n} torrent{n === 1 ? '' : 's'}?" onclose={() => (del = false)}>
