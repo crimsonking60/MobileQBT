@@ -53,10 +53,14 @@ Not recommended, since it *replaces* the built-in UI on that port, but it works:
 *Options → WebUI → Use alternative WebUI → Files location* to the folder that contains `public/`. To roll
 back, untick the option, or `app/setPreferences` with `{"alternative_webui_enabled": false}`.
 
-### HTTPS and the installable app
+### HTTPS: what you get without it
 
-Install-to-home-screen, the service worker and the `magnet:` link handler need a secure context (HTTPS, or
-`localhost`). Over plain HTTP the app still works in the browser; it just can't be installed.
+Over plain HTTP (e.g. on your LAN) the app works fully in the browser, and iOS/iPadOS can still *Add to
+Home Screen* and open it standalone. HTTPS with a **trusted** certificate additionally enables the service
+worker (instant start, offline app shell), notifications, the `magnet:` link handler and a proper install on
+Android Chrome. A self-signed certificate only helps if each device trusts its CA (e.g. via `mkcert`);
+otherwise browsers treat the site as untrusted and keep those features off. Tailscale's `tailscale serve`
+is an easy way to get a trusted certificate without opening any ports.
 
 ## Develop
 
