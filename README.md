@@ -27,9 +27,8 @@ docker run -d --name mobileqbt -p 8081:80 -e QBT_URL=http://qbittorrent:8080 \
 ```
 
 Pin a version (`ghcr.io/crimsonking60/mobileqbt:2026.11.1`) if you'd rather upgrade deliberately. Images are
-`linux/amd64` and `linux/arm64`. While the repository is private the package is too: either make it public
-(package settings on GitHub) or `docker login ghcr.io` with a token that has `read:packages`. To build
-locally instead: `docker build -t mobileqbt .`.
+`linux/amd64` and `linux/arm64`, and public, so no login is needed to pull. To build locally instead:
+`docker build -t mobileqbt .`.
 
 or use [`compose.example.yml`](compose.example.yml). `QBT_URL` is your qBittorrent WebUI's address as seen
 from the container (origin only, no path; `https://` works too). Open `http://<host>:8081` and sign in with
