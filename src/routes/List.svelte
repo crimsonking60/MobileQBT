@@ -4,6 +4,7 @@
   import { view } from '../lib/state/view.svelte';
   import { addUi } from '../lib/state/addui.svelte';
   import ActionBar from '../lib/ui/ActionBar.svelte';
+  import { settingsUi } from '../lib/state/settingsui.svelte';
   import FilterSheet from '../lib/ui/FilterSheet.svelte';
   import StatusBar from '../lib/ui/StatusBar.svelte';
   import TorrentRow from '../lib/ui/TorrentRow.svelte';
@@ -48,6 +49,8 @@
           class="relative rounded-lg px-3 py-2 active:bg-slate-100 dark:active:bg-slate-800">
           ⚙︎{#if filtered}<span class="absolute top-1.5 right-1.5 size-2 rounded-full bg-sky-500"></span>{/if}
         </button>
+        <button onclick={() => (settingsUi.open = true)} aria-label="Settings"
+          class="rounded-lg px-3 py-2 active:bg-slate-100 dark:active:bg-slate-800">⋮</button>
       </div>
     {/if}
     <StatusBar />

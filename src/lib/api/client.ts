@@ -100,6 +100,8 @@ export const api = {
     request('torrents/filePrio', form({ hash, id: ids.join('|'), priority })),
   rename: (hash: string, name: string) => request('torrents/rename', form({ hash, name })),
 
+  preferences: async (): Promise<Record<string, unknown>> => (await request('app/preferences')).json(),
+  setPreferences: (prefs: object) => request('app/setPreferences', form({ json: JSON.stringify(prefs) })),
   defaultSavePath: async () => (await request('app/defaultSavePath')).text(),
 
   toggleAltSpeed: () => request('transfer/toggleSpeedLimitsMode', { method: 'POST' }),

@@ -4,6 +4,8 @@
   import { media } from './lib/state/media.svelte';
   import { sync } from './lib/state/sync.svelte';
   import { addUi } from './lib/state/addui.svelte';
+  import { settingsUi } from './lib/state/settingsui.svelte';
+  import SettingsSheet from './lib/ui/SettingsSheet.svelte';
   import AddSheet from './lib/ui/AddSheet.svelte';
   import Toast from './lib/ui/Toast.svelte';
   import Detail from './routes/Detail.svelte';
@@ -35,5 +37,8 @@
   <div class="h-dvh"><List /></div>
 {/if}
 
-{#if sync.phase !== 'unauthenticated'}<AddSheet open={addUi.open} onclose={() => (addUi.open = false)} />{/if}
+{#if sync.phase !== 'unauthenticated'}
+  <AddSheet open={addUi.open} onclose={() => (addUi.open = false)} />
+  <SettingsSheet open={settingsUi.open} onclose={() => (settingsUi.open = false)} />
+{/if}
 <Toast />
