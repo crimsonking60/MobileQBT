@@ -1,0 +1,7 @@
+# Sourced by the nginx image entrypoint before templates are rendered.
+if [ -z "${QBT_URL:-}" ]; then
+  echo "mobileqbt: set QBT_URL to your qBittorrent WebUI, e.g. http://qbittorrent:8080" >&2
+  exit 1
+fi
+QBT_URL="${QBT_URL%/}"
+export QBT_URL

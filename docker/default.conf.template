@@ -1,0 +1,27 @@
+server {
+  listen 80;
+  root /usr/share/nginx/html;
+
+  gzip on;
+  gzip_types text/css application/javascript application/json image/svg+xml application/manifest+json;
+
+  # the app shell must always be fresh; hashed assets can be cached forever
+  location = /index.html { add_header Cache-Control "no-cache"; }
+  location = /sw.js { add_header Cache-Control "no-cache"; }
+  location /assets/ { add_header Cache-Control "public, max-age=31536000, immutable"; }
+
+  location / { try_files $uri /index.html; }
+
+  location /api/ {
+    proxy_pass ${QBT_URL};
+    # qBittorrent's CSRF/host checks compare Host, Origin and Referer with its own address, so present
+    # the request as if the browser had talked to qBittorrent directly.
+    proxy_set_header Host $proxy_host;
+    proxy_set_header Origin "${QBT_URL}";
+    proxy_set_header Referer "${QBT_URL}/";
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    client_max_body_size 64m;      # .torrent uploads
+    proxy_read_timeout 60s;
+  }
+}

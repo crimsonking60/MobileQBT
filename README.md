@@ -12,50 +12,46 @@ Targets qBittorrent **5.x only** (uses the `stop`/`start` endpoints). One deploy
 
 ## Deploy
 
-Build once:
+MobileQBT is a static app plus a thin proxy to qBittorrent's API, run as its **own service** next to (or
+away from) qBittorrent. The built-in WebUI stays untouched on its own port, so you keep the desktop UI for
+the heavy stuff and use this one on phones and tablets.
+
+### Docker (recommended)
 
 ```sh
-npm ci
-npm run package      # -> release/mobileqbt-webui/public/ (+ .zip), and dist/
+docker build -t mobileqbt .
+docker run -d --name mobileqbt -p 8081:80 -e QBT_URL=http://qbittorrent:8080 mobileqbt
 ```
 
-### A. As qBittorrent's alternative WebUI (simplest)
+or use [`compose.example.yml`](compose.example.yml). `QBT_URL` is your qBittorrent WebUI's address as seen
+from the container (origin only, no path; `https://` works too). Open `http://<host>:8081` and sign in with
+your normal qBittorrent credentials.
 
-1. Copy `release/mobileqbt-webui/` to the machine running qBittorrent (the `.zip` is just for carrying it
-   there; unzip it, qBittorrent can't load a zip itself).
-2. qBittorrent → *Options → WebUI → Use alternative WebUI* → set **Files location** to that
-   `mobileqbt-webui` folder (the one that *contains* `public/`). In a container, mount it and use the
-   in-container path.
-3. Open qBittorrent's usual WebUI address. The app is served same-origin, so no CORS or proxy setup is
-   needed, and it shows its own login screen.
+What the container does: serves the app and proxies `/api/` to `QBT_URL`, rewriting `Host`, `Origin` and
+`Referer` to qBittorrent's own address, so qBittorrent's CSRF and host-header checks pass without changing
+any qBittorrent setting. Requests carry `X-Forwarded-For`; enable *Reverse proxy support* in qBittorrent
+(and list this container's address as trusted) if you want its failed-login bans to apply per client
+instead of to the proxy.
 
-Rolling back: untick the option; the stock WebUI is back.
+If qBittorrent runs in another compose project, join the container to the same Docker network (or use a
+published host port and an address the container can reach).
 
-### B. Behind a reverse proxy
+### Without Docker
 
-Serve `dist/` as static files and proxy `/api/` to qBittorrent. Example (nginx):
-
-```nginx
-server {
-  listen 443 ssl;
-  server_name qbt.example.com;
-  root /srv/mobileqbt/dist;
-
-  location / { try_files $uri /index.html; }
-
-  location /api/ {
-    proxy_pass http://127.0.0.1:8080;
-    # qBittorrent's CSRF protection compares Host, Origin and Referer. Pass the public host through
-    # (and make sure the WebUI's host header validation allows it), or disable it in the WebUI options.
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $remote_addr;
-    proxy_set_header X-Forwarded-Proto $scheme;
-  }
-}
+```sh
+npm ci && npx vite build   # -> dist/
 ```
 
-If the API lives somewhere other than `/api/v2` relative to the page, set `VITE_API_BASE` at build time
-(e.g. `VITE_API_BASE=/qbt/api/v2 npm run package`).
+Serve `dist/` as static files and proxy `/api/` to qBittorrent; [`docker/default.conf.template`](docker/default.conf.template)
+is a complete nginx config to copy (substitute `${QBT_URL}`). If the API isn't at `/api/v2` relative to the
+page, set `VITE_API_BASE` at build time (e.g. `VITE_API_BASE=/qbt/api/v2`).
+
+### Optional: as qBittorrent's alternative WebUI
+
+Not recommended, since it *replaces* the built-in UI on that port, but it works: `npm run package`, unzip
+`release/mobileqbt-webui` on the qBittorrent host (qBittorrent can't load the zip itself) and set
+*Options → WebUI → Use alternative WebUI → Files location* to the folder that contains `public/`. To roll
+back, untick the option, or `app/setPreferences` with `{"alternative_webui_enabled": false}`.
 
 ### HTTPS and the installable app
 
@@ -82,8 +78,8 @@ First start of the dev container: it generates a random WebUI password. The comp
 | `npm run check` | svelte-check / type-check |
 | `npm test` | unit tests (Vitest) |
 | `npm run test:e2e` | Playwright against `npm run dev` (phone + tablet viewports) |
-| `E2E_BASE_URL=http://localhost:28080 npm run test:e2e` | same suite against a deployed build, e.g. the alt-WebUI one (also covers the service worker) |
-| `npm run package` | production build + alt-WebUI layout + zip |
+| `E2E_BASE_URL=http://localhost:28080 npm run test:e2e` | same suite against a deployed build, e.g. the Docker image: `docker run -p 127.0.0.1:28090:80 -e QBT_URL=… mobileqbt` then `E2E_BASE_URL=http://127.0.0.1:28090` (also covers the service worker) |
+| `npm run package` | production build + alt-WebUI layout + zip (only for the optional alt-WebUI mode) |
 | `node scripts/make-icons.mjs` | re-render PNG icons from `public/icon.svg` |
 
 To try the alt-WebUI build locally, the compose file already mounts `release/mobileqbt-webui` at

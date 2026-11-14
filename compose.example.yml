@@ -1,0 +1,11 @@
+# Run MobileQBT next to (or away from) your qBittorrent and point it at the WebUI.
+# Put your usual HTTPS reverse proxy / tunnel in front of port 8081 (HTTPS is needed to install the app).
+services:
+  mobileqbt:
+    build: .
+    # image: your-registry/mobileqbt   # once you've pushed a build somewhere
+    restart: unless-stopped
+    environment:
+      QBT_URL: http://qbittorrent:8080   # your qBittorrent WebUI; origin only, no path
+    ports:
+      - "8081:80"
