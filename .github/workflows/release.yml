@@ -87,8 +87,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
+          image="${IMAGE,,}"   # registry paths must be lowercase
           gh release create "$VERSION" \
             --target "$GITHUB_SHA" \
             --title "$VERSION" \
             --generate-notes \
-            --notes "Image: \`${IMAGE}:${VERSION}\`"
+            --notes "Image: \`${image}:${VERSION}\`"
