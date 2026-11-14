@@ -10,21 +10,24 @@ export const TABS: { id: Tab; label: string }[] = [
 const isTab = (s: string | undefined): s is Tab => TABS.some((t) => t.id === s);
 
 /** Hash routes: `#/torrent/<hash>[/<tab>]`; anything else is the list. */
-export function parseHash(hash: string): { torrent: string | null; tab: Tab } {
+export function parseHash(hash: string): { torrent: string | null; tab: Tab; rss: boolean } {
   const [, kind, id, tab] = hash.replace(/^#/, '').split('/');
-  if (kind === 'torrent' && id) return { torrent: id, tab: isTab(tab) ? tab : 'general' };
-  return { torrent: null, tab: 'general' };
+  if (kind === 'torrent' && id) return { torrent: id, tab: isTab(tab) ? tab : 'general', rss: false };
+  if (kind === 'rss') return { torrent: null, tab: 'general', rss: true };
+  return { torrent: null, tab: 'general', rss: false };
 }
 
 class Router {
   torrent = $state<string | null>(null);
   tab = $state<Tab>('general');
+  /** the full-screen RSS section (`#/rss`) */
+  rss = $state(false);
 
   constructor() {
     if (typeof window === 'undefined') return;
     const sync = () => Object.assign(this, parseHash(location.hash));
     sync();
-    addEventListener('hashchange', () => { sync(); if (!this.torrent) this.#pushed = false; });
+    addEventListener('hashchange', () => { sync(); if (!this.torrent && !this.rss) this.#pushed = false; });
   }
 
   /** Tab switches replace the entry so Back leaves the detail view in one step. */
@@ -39,6 +42,17 @@ class Router {
   close() {
     if (this.#pushed) { this.#pushed = false; history.back(); }
     else { history.replaceState(null, '', location.pathname + location.search); Object.assign(this, { torrent: null }); }
+  }
+
+  openRss() {
+    location.hash = '#/rss';
+    this.#pushed = true;
+    Object.assign(this, { torrent: null, rss: true });
+  }
+
+  closeRss() {
+    if (this.#pushed) { this.#pushed = false; history.back(); }
+    else { history.replaceState(null, '', location.pathname + location.search); Object.assign(this, { rss: false }); }
   }
 
   #pushed = false;

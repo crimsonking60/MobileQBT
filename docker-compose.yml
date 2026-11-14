@@ -19,3 +19,10 @@ services:
       # alt-WebUI build (npm run package); enable it in qBittorrent with path /webui
       - ./release/mobileqbt-webui:/webui:ro
     restart: unless-stopped
+
+  # tiny RSS feed for developing the RSS screens: add http://rss-fixture/feed.xml in qBittorrent
+  rss-fixture:
+    image: nginx:1.27-alpine
+    container_name: mobileqbt-dev-rss
+    volumes:
+      - ./scripts/rss-fixture:/usr/share/nginx/html:ro

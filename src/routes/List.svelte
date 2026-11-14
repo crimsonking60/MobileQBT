@@ -6,7 +6,7 @@
   import { view } from '../lib/state/view.svelte';
   import { addUi } from '../lib/state/addui.svelte';
   import ActionBar from '../lib/ui/ActionBar.svelte';
-  import { settingsUi } from '../lib/state/settingsui.svelte';
+  import MenuSheet from '../lib/ui/MenuSheet.svelte';
   import FilterSheet from '../lib/ui/FilterSheet.svelte';
   import StatusBar from '../lib/ui/StatusBar.svelte';
   import TorrentRow from '../lib/ui/TorrentRow.svelte';
@@ -15,6 +15,7 @@
   const OVERSCAN = 6;
 
   let filters = $state(false);
+  let menu = $state(false);
   let scroller = $state<HTMLElement>();
   let scrollTop = $state(0);
   let height = $state(800);
@@ -63,7 +64,7 @@
           class="relative rounded-lg px-3 py-2 active:bg-slate-100 dark:active:bg-slate-800">
           <Icon name="filter" />{#if filtered}<span class="absolute top-1.5 right-1.5 size-2 rounded-full bg-sky-500"></span>{/if}
         </button>
-        <button onclick={() => (settingsUi.open = true)} aria-label="Settings"
+        <button onclick={() => (menu = true)} aria-label="Menu"
           class="rounded-lg px-3 py-2 active:bg-slate-100 dark:active:bg-slate-800"><Icon name="more-v" /></button>
       </div>
     {/if}
@@ -100,4 +101,5 @@
            bg-sky-600 text-white shadow-lg active:bg-sky-700"><Icon name="plus" size={28} /></button>
 {/if}
 <FilterSheet open={filters} onclose={() => (filters = false)} />
+<MenuSheet open={menu} onclose={() => (menu = false)} />
 </div>

@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { login } from './helpers';
+import { login, openMenuItem } from './helpers';
 
 test('edit and restore a speed limit', async ({ page }) => {
   await login(page);
-  await page.getByRole('button', { name: 'Settings' }).click();
+  await openMenuItem(page, 'Settings');
   const dlg = page.getByRole('dialog').last();
   const field = dlg.getByLabel('Download limit', { exact: true });
   await expect(field).toBeVisible();
@@ -15,7 +15,7 @@ test('edit and restore a speed limit', async ({ page }) => {
   await save.click();
   await expect(page.getByText('Settings saved')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Settings' }).click();
+  await openMenuItem(page, 'Settings');
   const again = page.getByRole('dialog').last().getByLabel('Download limit', { exact: true });
   await expect(again).toHaveValue('1234');
   await again.fill(before);

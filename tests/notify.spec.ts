@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { login } from './helpers';
+import { login, openMenuItem } from './helpers';
 
 test('enabling notifications announces a finished download', async ({ page, context }) => {
   // headless Chromium reports 'denied' regardless of grants, so fake a granted permission
@@ -18,7 +18,7 @@ test('enabling notifications announces a finished download', async ({ page, cont
   });
 
   await login(page);
-  await page.getByRole('button', { name: 'Settings' }).click();
+  await openMenuItem(page, 'Settings');
   const box = page.getByRole('dialog').last().getByLabel('Notify on finish or error');
   await box.check();
   await expect(box).toBeChecked();
@@ -28,6 +28,6 @@ test('enabling notifications announces a finished download', async ({ page, cont
   await expect(page.getByText('Download complete: Partial.Pack')).toBeVisible({ timeout: 8000 });
 
   // turn it back off so later tests start clean
-  await page.getByRole('button', { name: 'Settings' }).click();
+  await openMenuItem(page, 'Settings');
   await page.getByRole('dialog').last().getByLabel('Notify on finish or error').uncheck();
 });

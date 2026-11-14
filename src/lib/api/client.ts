@@ -1,5 +1,5 @@
 import type {
-  AddTorrentOptions, FilePriority, MainData, PeersResponse, TorrentFile, TorrentProperties, Tracker,
+  AddTorrentOptions, FilePriority, MainData, PeersResponse, RssRule, RssTree, TorrentFile, TorrentProperties, Tracker,
 } from './types';
 
 const BASE: string = import.meta.env.VITE_API_BASE ?? 'api/v2';
@@ -102,6 +102,23 @@ export const api = {
 
   preferences: async (): Promise<Record<string, unknown>> => (await request('app/preferences')).json(),
   setPreferences: (prefs: object) => request('app/setPreferences', form({ json: JSON.stringify(prefs) })),
+  rssItems: async (): Promise<RssTree> => (await request('rss/items?withData=true')).json(),
+  rssAddFeed: (url: string, path: string) => request('rss/addFeed', form({ url, path })),
+  rssSetFeedUrl: (path: string, url: string) => request('rss/setFeedURL', form({ path, url })),
+  rssRemoveItem: (path: string) => request('rss/removeItem', form({ path })),
+  rssMoveItem: (itemPath: string, destPath: string) => request('rss/moveItem', form({ itemPath, destPath })),
+  rssRefresh: (itemPath: string) => request('rss/refreshItem', form({ itemPath })),
+  /** without an articleId the whole feed is marked read */
+  rssMarkRead: (itemPath: string, articleId?: string) =>
+    request('rss/markAsRead', form(articleId ? { itemPath, articleId } : { itemPath })),
+  rssRules: async (): Promise<Record<string, RssRule>> => (await request('rss/rules')).json(),
+  rssSetRule: (ruleName: string, ruleDef: RssRule) =>
+    request('rss/setRule', form({ ruleName, ruleDef: JSON.stringify(ruleDef) })),
+  rssRenameRule: (ruleName: string, newRuleName: string) =>
+    request('rss/renameRule', form({ ruleName, newRuleName })),
+  rssRemoveRule: (ruleName: string) => request('rss/removeRule', form({ ruleName })),
+  rssMatching: async (ruleName: string): Promise<Record<string, string[]>> =>
+    (await request('rss/matchingArticles', form({ ruleName }))).json(),
   defaultSavePath: async () => (await request('app/defaultSavePath')).text(),
 
   toggleAltSpeed: () => request('transfer/toggleSpeedLimitsMode', { method: 'POST' }),

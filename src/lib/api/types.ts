@@ -154,3 +154,46 @@ export interface PeersResponse {
   peers?: Record<string, Peer>;
   show_flags?: boolean;
 }
+
+export interface RssArticle {
+  id: string;
+  title: string;
+  description?: string;
+  /** qBittorrent formats this as "14 Nov 2026 11:00:00 +0000" */
+  date?: string;
+  link?: string;
+  torrentURL?: string;
+  author?: string;
+  /** only present once read */
+  isRead?: boolean;
+}
+
+export interface RssFeedData {
+  uid: string;
+  url: string;
+  title?: string;
+  articles?: RssArticle[];
+  hasError?: boolean;
+  isLoading?: boolean;
+  lastBuildDate?: string;
+}
+
+/** sync/rss tree: feeds are leaves, anything else is a folder of more nodes. */
+export interface RssTree { [name: string]: RssFeedData | RssTree }
+
+export interface RssRule {
+  enabled: boolean;
+  mustContain: string;
+  mustNotContain: string;
+  useRegex: boolean;
+  episodeFilter: string;
+  smartFilter: boolean;
+  affectedFeeds: string[];
+  ignoreDays: number;
+  lastMatch: string;
+  assignedCategory: string;
+  savePath: string;
+  addPaused: boolean | null;
+  torrentParams?: Record<string, unknown>;
+  [extra: string]: unknown;
+}

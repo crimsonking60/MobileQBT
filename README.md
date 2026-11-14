@@ -6,7 +6,8 @@ tablets and desktops get a list/detail split. Installable as a PWA.
 
 Features: torrent list with live updates, search, status/category/tag filters and sorting, multi-select
 actions, add by magnet / URL / `.torrent` upload, per-torrent General, Trackers, Peers, Files (with
-priorities) and Speed tabs, alt-speed toggle, light/dark theme.
+priorities) and Speed tabs, alt-speed toggle, RSS (feeds, articles, auto-download rules with match preview), settings, category/tag
+management, keyboard shortcuts, notifications, light/dark theme.
 
 Targets qBittorrent **5.x only** (uses the `stop`/`start` endpoints). One deployment per qBittorrent server.
 

@@ -49,3 +49,8 @@ export async function mockActivity(page: Page) {
     }),
   );
 }
+
+export async function openMenuItem(page: Page, name: string) {
+  await page.getByRole('button', { name: 'Menu' }).click();
+  await page.getByRole('dialog').last().getByRole('button', { name, exact: true }).click();
+}
