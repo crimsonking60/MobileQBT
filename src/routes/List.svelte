@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { router } from '../lib/router.svelte';
   import { sync } from '../lib/state/sync.svelte';
   import { view } from '../lib/state/view.svelte';
   import ActionBar from '../lib/ui/ActionBar.svelte';
@@ -22,12 +23,15 @@
   const filtered = $derived(view.status !== 'all' || view.category !== null || view.tag !== null);
   const total = $derived(Object.keys(sync.data.torrents).length);
 
-  function openTorrent(_hash: string) {
-    // detail view comes next
-  }
+  let restored = false;
+  $effect(() => {
+    if (!scroller || restored) return;
+    restored = true;
+    scroller.scrollTop = scrollTop = view.scrollTop;
+  });
 </script>
 
-<div class="flex h-dvh flex-col">
+<div class="relative flex h-full flex-col">
   <header class="border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] dark:border-slate-800 dark:bg-slate-900">
     {#if view.selecting}
       <div class="flex items-center gap-2 px-3 py-2">
@@ -56,20 +60,20 @@
     <p class="p-6 text-center text-slate-500">{total === 0 ? 'No torrents yet.' : 'No torrents match.'}</p>
   {:else}
     <div bind:this={scroller} class="flex-1 overflow-y-auto overscroll-contain {view.selecting ? 'pb-16' : ''}"
-         onscroll={() => (scrollTop = scroller!.scrollTop)} bind:clientHeight={height}>
+         onscroll={() => (scrollTop = view.scrollTop = scroller!.scrollTop)} bind:clientHeight={height}>
       <div style:height="{list.length * ROW_H}px" class="relative">
         <div style:transform="translateY({start * ROW_H}px)">
           {#each slice as t (t.hash)}
             <div style:height="{ROW_H}px">
               <TorrentRow {t} selecting={view.selecting} selected={view.selected.has(t.hash)}
-                ontap={() => openTorrent(t.hash)} onselect={() => view.toggle(t.hash)} />
+                active={router.torrent === t.hash} ontap={() => router.open(t.hash)} onselect={() => view.toggle(t.hash)} />
             </div>
           {/each}
         </div>
       </div>
     </div>
   {/if}
-</div>
 
 {#if view.selecting}<ActionBar />{/if}
 <FilterSheet open={filters} onclose={() => (filters = false)} />
+</div>

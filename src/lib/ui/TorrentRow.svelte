@@ -3,8 +3,8 @@
   import { formatBytes, formatEta, formatPercent, formatSpeed, stateInfo } from '../format';
   import ProgressBar from './ProgressBar.svelte';
 
-  let { t, selected, selecting, ontap, onselect }: {
-    t: Torrent; selected: boolean; selecting: boolean;
+  let { t, selected, selecting, active = false, ontap, onselect }: {
+    t: Torrent; selected: boolean; selecting: boolean; active?: boolean;
     ontap: () => void; onselect: () => void;
   } = $props();
 
@@ -34,7 +34,7 @@
 <button type="button"
   class="flex h-full w-full flex-col justify-center gap-1.5 border-b border-slate-200 px-4 text-left select-none
          active:bg-slate-100 dark:border-slate-800 dark:active:bg-slate-800/60
-         {selected ? 'bg-sky-50 dark:bg-sky-950/40' : ''}"
+         {selected ? 'bg-sky-50 dark:bg-sky-950/40' : active ? 'bg-slate-100 dark:bg-slate-800/60' : ''}"
   onpointerdown={down} onpointermove={move} onpointerup={cancel} onpointercancel={cancel} onpointerleave={cancel}
   oncontextmenu={(e) => e.preventDefault()} onclick={click} aria-pressed={selecting ? selected : undefined}>
   <div class="flex items-center gap-2">

@@ -14,8 +14,15 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target,
           changeOrigin: false,
-          // qBittorrent validates Host/Origin against its own port; present as the target
+          // qBittorrent's CSRF check compares Host, Origin and Referer with each other and with
+          // its own port, so present all three as the target (dev only; production is same-origin)
           headers: { Host: new URL(target).host },
+          configure: (proxy) => {
+            proxy.on('proxyReq', (req) => {
+              if (req.getHeader('origin')) req.setHeader('origin', target);
+              if (req.getHeader('referer')) req.setHeader('referer', `${target}/`);
+            });
+          },
         },
       },
     },

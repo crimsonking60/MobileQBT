@@ -25,6 +25,8 @@ class ViewState {
   sortKey = $state<SortKey>('added_on');
   sortDesc = $state(true);
   selected = $state<Set<string>>(new Set());
+  /** list scroll offset, restored when returning from a detail view */
+  scrollTop = 0;
 
   visible = $derived.by<Torrent[]>(() => {
     const q = this.search.trim().toLowerCase();

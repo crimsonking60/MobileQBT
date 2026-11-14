@@ -79,3 +79,26 @@ export function stateInfo(s: TorrentState): { label: string; tone: Tone } {
     default: return { label: 'Unknown', tone: 'idle' };
   }
 }
+
+/** Unix seconds -> locale date-time; qBittorrent uses -1 / 0 for "never". */
+export function formatDate(ts: number): string {
+  return ts > 0 ? new Date(ts * 1000).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '–';
+}
+
+export function formatDuration(s: number): string {
+  if (!Number.isFinite(s) || s < 0) return '–';
+  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
+  if (d) return `${d}d ${h}h`;
+  if (h) return `${h}h ${m}m`;
+  if (m) return `${m}m`;
+  return `${Math.floor(s)}s`;
+}
+
+/** Round a speed up to a tidy axis maximum in binary units (e.g. 1.3 MiB/s -> 2 MiB/s). */
+export function niceSpeedMax(v: number): number {
+  if (!(v > 0)) return 1024;
+  const unit = 1024 ** Math.floor(Math.log(v) / Math.log(1024));
+  const scaled = v / unit;
+  const p = 10 ** Math.floor(Math.log10(scaled));
+  return ([1, 2, 5, 10].find((m) => m * p >= scaled) ?? 10) * p * unit;
+}

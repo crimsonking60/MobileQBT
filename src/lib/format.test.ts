@@ -25,3 +25,12 @@ describe('format', () => {
     expect(matchStatus(t, 'downloading')).toBe(false);
   });
 });
+
+import { niceSpeedMax } from './format';
+describe('niceSpeedMax', () => {
+  it('rounds in binary units', () => {
+    expect(niceSpeedMax(1.3 * 1024 ** 2)).toBe(2 * 1024 ** 2);
+    expect(niceSpeedMax(300 * 1024)).toBe(500 * 1024);
+    expect(niceSpeedMax(0)).toBe(1024);
+  });
+});

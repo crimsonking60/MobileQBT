@@ -1,4 +1,6 @@
-import type { AddTorrentOptions, MainData } from './types';
+import type {
+  AddTorrentOptions, FilePriority, MainData, PeersResponse, TorrentFile, TorrentProperties, Tracker,
+} from './types';
 
 const BASE: string = import.meta.env.VITE_API_BASE ?? 'api/v2';
 
@@ -56,6 +58,22 @@ export const api = {
     request('torrents/removeTags', form({ hashes: hashes(h), tags: tags.join(',') })),
   priority: (h: string[], op: 'topPrio' | 'bottomPrio' | 'increasePrio' | 'decreasePrio') =>
     request(`torrents/${op}`, form({ hashes: hashes(h) })),
+
+  async properties(hash: string): Promise<TorrentProperties> {
+    return (await request(`torrents/properties?hash=${hash}`)).json();
+  },
+  async trackers(hash: string): Promise<Tracker[]> {
+    return (await request(`torrents/trackers?hash=${hash}`)).json();
+  },
+  async files(hash: string): Promise<TorrentFile[]> {
+    return (await request(`torrents/files?hash=${hash}`)).json();
+  },
+  async peers(hash: string): Promise<PeersResponse> {
+    return (await request(`sync/torrentPeers?hash=${hash}&rid=0`)).json();
+  },
+  setFilePriority: (hash: string, ids: number[], priority: FilePriority) =>
+    request('torrents/filePrio', form({ hash, id: ids.join('|'), priority })),
+  rename: (hash: string, name: string) => request('torrents/rename', form({ hash, name })),
 
   toggleAltSpeed: () => request('transfer/toggleSpeedLimitsMode', { method: 'POST' }),
 

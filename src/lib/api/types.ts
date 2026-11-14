@@ -71,3 +71,86 @@ export interface AddTorrentOptions {
   sequentialDownload?: boolean;
   firstLastPiecePrio?: boolean;
 }
+
+/** torrents/properties */
+export interface TorrentProperties {
+  save_path: string;
+  creation_date: number;
+  piece_size: number;
+  comment: string;
+  total_wasted: number;
+  total_uploaded: number;
+  total_downloaded: number;
+  up_limit: number;
+  dl_limit: number;
+  time_elapsed: number;
+  seeding_time: number;
+  nb_connections: number;
+  nb_connections_limit: number;
+  share_ratio: number;
+  addition_date: number;
+  completion_date: number;
+  created_by: string;
+  dl_speed_avg: number;
+  up_speed_avg: number;
+  eta: number;
+  last_seen: number;
+  peers: number;
+  peers_total: number;
+  pieces_have: number;
+  pieces_num: number;
+  seeds: number;
+  seeds_total: number;
+  total_size: number;
+  is_private?: boolean;
+  infohash_v1?: string;
+}
+
+/** torrents/trackers; status: 0 disabled, 1 not contacted, 2 working, 3 updating, 4 not working */
+export interface Tracker {
+  url: string;
+  status: 0 | 1 | 2 | 3 | 4;
+  tier: number;
+  num_peers: number;
+  num_seeds: number;
+  num_leeches: number;
+  num_downloaded: number;
+  msg: string;
+}
+
+/** priority: 0 skip, 1 normal, 6 high, 7 maximal */
+export type FilePriority = 0 | 1 | 6 | 7;
+
+export interface TorrentFile {
+  index: number;
+  name: string;
+  size: number;
+  progress: number;
+  priority: FilePriority;
+  availability: number;
+}
+
+export interface Peer {
+  client: string;
+  connection: string;
+  country: string;
+  country_code: string;
+  dl_speed: number;
+  downloaded: number;
+  files: string;
+  flags: string;
+  flags_desc: string;
+  ip: string;
+  port: number;
+  progress: number;
+  relevance: number;
+  up_speed: number;
+  uploaded: number;
+}
+
+export interface PeersResponse {
+  rid: number;
+  full_update?: boolean;
+  peers?: Record<string, Peer>;
+  show_flags?: boolean;
+}
