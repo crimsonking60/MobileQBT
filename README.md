@@ -73,6 +73,10 @@ is an easy way to get a trusted certificate without opening any ports.
 
 ## Releases
 
+What changed in each version is in [CHANGELOG.md](CHANGELOG.md) and on the
+[Releases page](https://github.com/crimsonking60/MobileQBT/releases). When changing the app, add a line under
+`## Unreleased` in the changelog; the workflow stamps it with the version and uses it as the release notes.
+
 Versions are calendar based, `YYYY.MM.N`, where N counts releases within the month (`2026.11.1`,
 `2026.11.2`, then `2026.12.1`). The [release workflow](.github/workflows/release.yml) runs on every push to
 `main` (except changes that only touch docs, Markdown files or tests): it type-checks and runs the unit tests, builds the multi-arch

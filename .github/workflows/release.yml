@@ -89,8 +89,33 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           image="${IMAGE,,}"   # registry paths must be lowercase
+          {
+            node scripts/changelog.mjs notes
+            echo
+            echo "Image: \`${image}:${VERSION}\`"
+          } > notes.md
+          # no changelog entries: fall back to GitHub's generated notes (commit list)
+          if [ "$(node scripts/changelog.mjs notes | wc -c)" -eq 0 ]; then generate=--generate-notes; else generate=; fi
           gh release create "$VERSION" \
             --target "$GITHUB_SHA" \
             --title "$VERSION" \
-            --generate-notes \
-            --notes "Image: \`${image}:${VERSION}\`"
+            $generate \
+            --notes-file notes.md
+
+      # move "Unreleased" in CHANGELOG.md under the new version; committed as the repo owner so the
+      # history only ever shows one account (GITHUB_TOKEN pushes don't start another workflow run)
+      - name: Stamp changelog
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if [ "$(node scripts/changelog.mjs notes | wc -c)" -eq 0 ]; then echo "No unreleased entries"; exit 0; fi
+          node scripts/changelog.mjs stamp "$VERSION" "$(date -u +%F)"
+          owner="${GITHUB_REPOSITORY_OWNER}"
+          id=$(gh api "users/${owner}" --jq .id)
+          git config user.name "$owner"
+          git config user.email "${id}+${owner}@users.noreply.github.com"
+          git add CHANGELOG.md
+          git commit -m "Changelog: ${VERSION}"
+          git pull --rebase origin main
+          git push origin HEAD:main
