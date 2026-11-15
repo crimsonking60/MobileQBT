@@ -8,6 +8,8 @@ version's section and uses them as the GitHub release notes.
 
 ## Unreleased
 
+## 2026.11.8 - 2026-11-15
+
 ### Added
 - Search: qBittorrent's search plugins from the Menu. Results stream in, can be filtered and sorted, and are added
   through the usual add sheet. A Plugins tab enables, installs, updates and removes plugins.
