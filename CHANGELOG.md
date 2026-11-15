@@ -8,6 +8,8 @@ version's section and uses them as the GitHub release notes.
 
 ## Unreleased
 
+## 2026.11.6 - 2026-11-15
+
 ### Added
 - [User guide](docs/guide.md): Docker setup, authentication, HTTPS, all features, troubleshooting.
 - This changelog.
