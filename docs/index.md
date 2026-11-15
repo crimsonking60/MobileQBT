@@ -22,4 +22,4 @@ Open `http://<docker-host>:8081` and sign in with your qBittorrent credentials.
 Next: the [user guide](guide.md) covers Docker setup, authentication, HTTPS and every feature, and the
 [changelog](changelog.md) lists what each release contains.
 
-Source and issues: [github.com/crimsonking60/MobileQBT](https://github.com/crimsonking60/MobileQBT).
+Documentation: [mobileqbt.readthedocs.io](https://mobileqbt.readthedocs.io/). Source and issues: [github.com/crimsonking60/MobileQBT](https://github.com/crimsonking60/MobileQBT).

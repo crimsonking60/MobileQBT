@@ -1,4 +1,5 @@
 site_name: MobileQBT
+site_url: https://mobileqbt.readthedocs.io/
 site_description: A mobile-first admin UI for qBittorrent 5.x
 repo_url: https://github.com/crimsonking60/MobileQBT
 edit_uri: edit/main/docs/
