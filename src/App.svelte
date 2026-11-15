@@ -15,6 +15,7 @@
   import List from './routes/List.svelte';
   import Login from './routes/Login.svelte';
   import Rss from './routes/Rss.svelte';
+  import Search from './routes/Search.svelte';
 
   let innerWidth = $state(typeof window === 'undefined' ? 1024 : window.innerWidth);
 
@@ -30,6 +31,8 @@
   <Login />
 {:else if router.rss}
   <div class="h-dvh"><Rss /></div>
+{:else if router.search}
+  <div class="h-dvh"><Search /></div>
 {:else if media.wide}
   <div class="flex h-dvh">
     <aside class="shrink-0" style:width="{clampSplit(split.width, innerWidth)}px"><List /></aside>

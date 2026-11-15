@@ -10,11 +10,13 @@ export const TABS: { id: Tab; label: string }[] = [
 const isTab = (s: string | undefined): s is Tab => TABS.some((t) => t.id === s);
 
 /** Hash routes: `#/torrent/<hash>[/<tab>]`; anything else is the list. */
-export function parseHash(hash: string): { torrent: string | null; tab: Tab; rss: boolean } {
+export function parseHash(hash: string): { torrent: string | null; tab: Tab; rss: boolean; search: boolean } {
   const [, kind, id, tab] = hash.replace(/^#/, '').split('/');
-  if (kind === 'torrent' && id) return { torrent: id, tab: isTab(tab) ? tab : 'general', rss: false };
-  if (kind === 'rss') return { torrent: null, tab: 'general', rss: true };
-  return { torrent: null, tab: 'general', rss: false };
+  const base = { torrent: null, tab: 'general' as Tab, rss: false, search: false };
+  if (kind === 'torrent' && id) return { ...base, torrent: id, tab: isTab(tab) ? tab : 'general' };
+  if (kind === 'rss') return { ...base, rss: true };
+  if (kind === 'search') return { ...base, search: true };
+  return base;
 }
 
 class Router {
@@ -22,12 +24,14 @@ class Router {
   tab = $state<Tab>('general');
   /** the full-screen RSS section (`#/rss`) */
   rss = $state(false);
+  /** the full-screen search section (`#/search`) */
+  search = $state(false);
 
   constructor() {
     if (typeof window === 'undefined') return;
     const sync = () => Object.assign(this, parseHash(location.hash));
     sync();
-    addEventListener('hashchange', () => { sync(); if (!this.torrent && !this.rss) this.#pushed = false; });
+    addEventListener('hashchange', () => { sync(); if (!this.torrent && !this.rss && !this.search) this.#pushed = false; });
   }
 
   /** Tab switches replace the entry so Back leaves the detail view in one step. */
@@ -53,6 +57,17 @@ class Router {
   closeRss() {
     if (this.#pushed) { this.#pushed = false; history.back(); }
     else { history.replaceState(null, '', location.pathname + location.search); Object.assign(this, { rss: false }); }
+  }
+
+  openSearch() {
+    history.pushState(null, '', '#/search');
+    this.#pushed = true;
+    Object.assign(this, { torrent: null, search: true });
+  }
+
+  closeSearch() {
+    if (this.#pushed) { this.#pushed = false; history.back(); }
+    else { history.replaceState(null, '', location.pathname + location.search); Object.assign(this, { search: false }); }
   }
 
   #pushed = false;

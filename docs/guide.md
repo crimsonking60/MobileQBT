@@ -323,6 +323,29 @@ Menu (the ⋮ button next to the filter button) → **RSS**. Three tabs:
 RSS processing itself (fetching on a schedule and applying rules) is done by qBittorrent; *Options → RSS* in
 qBittorrent controls the refresh interval and whether RSS is enabled at all.
 
+### Search
+
+Menu → **Search**. This is qBittorrent's built-in torrent search: small **plugins** scrape torrent sites on
+the qBittorrent host, and MobileQBT gives it a phone-friendly front end. It needs **Python on the qBittorrent
+host**; the screen tells you when there are no plugins.
+
+- **Search tab**: type a query, pick a **category** (the categories the chosen sites understand) and
+  **sites** (all enabled ones, or a single plugin), and press Search. Results appear while the plugins are
+  still working; **Stop** ends the search early and keeps what has arrived.
+- **Results**: name, size, site, date and seeders/leechers. Filter them with the box above the list (same word
+  matching as the torrent list) and sort by seeders, size, date or name; the arrow flips the direction.
+  Long result lists show 100 at a time with a *Show more* button.
+- **Adding**: tap a result for its details. **Add torrent…** opens the usual add sheet with the magnet link
+  filled in, so you choose category and save path as usual. For results that are not magnet links, **Download**
+  asks qBittorrent to fetch them through the plugin that found them. **Open on the site** opens the result's page.
+- **Plugins tab**: switch plugins on and off, **Install plugin** from a URL (or a path on the qBittorrent
+  host), **Check for updates**, and **Remove**. Installs and updates finish on the server a moment later and
+  the list refreshes by itself.
+
+Plugins are scripts that run with the same access as qBittorrent, so install only ones you trust. Results are
+whatever the plugins can scrape; they break when a site changes. Searching is for finding one thing now; RSS
+rules are for downloading matches automatically.
+
 ### Settings
 
 Menu → **Settings** (or `,`). Only the values you change are written to qBittorrent.
@@ -334,7 +357,7 @@ Menu → **Settings** (or `,`). Only the values you change are written to qBitto
 - **Connections**: global and per-torrent connection and upload-slot limits (-1 = unlimited).
 - **Queueing**: enable, and the limits for active downloads, uploads and total torrents.
 
-Anything not listed (ports, encryption, BitTorrent protocol options, search plugins, WebUI settings) is
+Anything not listed (ports, encryption, BitTorrent protocol options, WebUI settings) is
 managed in qBittorrent's own WebUI.
 
 ## 6. Keyboard shortcuts
@@ -412,6 +435,7 @@ docker compose pull && docker compose up -d      # follow latest
 | Works on the LAN, not over the internet | Port forwarding, firewall, or HTTPS misconfiguration at your reverse proxy. |
 | No notifications | HTTPS trusted? Permission granted? On iOS, installed to the Home Screen? See [section 7](#7-notifications). |
 | Old version after an update | Reload twice; make sure you pulled and recreated the container. |
+| Search says there are no plugins, or never returns | Python must be installed on the qBittorrent host (the built-in WebUI's search tab shows the same problem). Install a plugin under Search → Plugins. |
 | Start/stop does nothing or errors | You are on qBittorrent 4.x. MobileQBT needs 5.x. |
 | `.torrent` upload fails | Over 64 MB, or the file isn't a valid torrent. |
 
@@ -421,6 +445,6 @@ To see what the container is doing: `docker logs mobileqbt`.
 
 - qBittorrent **5.x only**; one qBittorrent per deployment.
 - No sign-out button; no multiple users or roles.
-- No search-plugin UI. Use qBittorrent's built-in WebUI for that, and for advanced options.
+- Search needs Python on the qBittorrent host and plugins you install yourself; MobileQBT does not provide any.
 - Notifications require HTTPS and an alive app; there is no push backend.
 - The Speed tab charts only the time the page has been open.

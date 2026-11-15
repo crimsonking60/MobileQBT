@@ -197,3 +197,29 @@ export interface RssRule {
   torrentParams?: Record<string, unknown>;
   [extra: string]: unknown;
 }
+
+export interface SearchCategory { id: string; name: string }
+
+export interface SearchPlugin {
+  name: string;
+  fullName: string;
+  enabled: boolean;
+  version: string;
+  url: string;
+  supportedCategories: SearchCategory[];
+}
+
+export interface SearchResult {
+  fileName: string;
+  fileUrl: string;
+  fileSize: number;
+  nbSeeders: number;
+  nbLeechers: number;
+  siteUrl: string;
+  descrLink: string;
+  pubDate?: number;
+}
+
+export interface SearchStatus { id: number; status: 'Running' | 'Stopped'; total: number }
+
+export interface SearchResults { results: SearchResult[]; status: 'Running' | 'Stopped'; total: number }

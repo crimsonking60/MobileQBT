@@ -6,7 +6,7 @@ tablets and desktops get a list/detail split. Installable as a PWA.
 
 Features: torrent list with live updates, search, status/category/tag filters and sorting, multi-select
 actions, add by magnet / URL / `.torrent` upload, per-torrent General, Trackers, Peers, Files (with
-priorities) and Speed tabs, alt-speed toggle, RSS (feeds, articles, auto-download rules with match preview), settings, category/tag
+priorities) and Speed tabs, alt-speed toggle, torrent search (plugins, results, add), RSS (feeds, articles, auto-download rules with match preview), settings, category/tag
 management, keyboard shortcuts, notifications, light/dark theme.
 
 See the **[user guide](docs/guide.md)** (also at [mobileqbt.readthedocs.io](https://mobileqbt.readthedocs.io/)) for Docker setup, authentication, HTTPS and all features.

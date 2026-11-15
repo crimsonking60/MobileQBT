@@ -18,6 +18,8 @@ services:
       - ./dev/qbt/downloads:/downloads
       # alt-WebUI build (npm run package); enable it in qBittorrent with path /webui
       - ./release/mobileqbt-webui:/webui:ro
+      # fake search plugin for the Search screens: install /fixtures/mobileqbt_test.py in qBittorrent
+      - ./scripts/search-fixture:/fixtures:ro
     restart: unless-stopped
 
   # tiny RSS feed for developing the RSS screens: add http://rss-fixture/feed.xml in qBittorrent

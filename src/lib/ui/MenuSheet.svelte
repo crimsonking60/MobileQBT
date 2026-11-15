@@ -10,6 +10,7 @@
 </script>
 
 <Sheet {open} title="Menu" {onclose}>
+  <button class={row} onclick={() => { onclose(); router.openSearch(); }}>Search</button>
   <button class={row} onclick={() => { onclose(); router.openRss(); }}>RSS</button>
   <button class={row} onclick={() => { onclose(); settingsUi.open = true; }}>Settings</button>
   <button class="{row} hidden md:block" onclick={() => { onclose(); actionUi.help = true; }}>Keyboard shortcuts</button>

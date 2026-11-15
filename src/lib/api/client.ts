@@ -1,5 +1,5 @@
 import type {
-  AddTorrentOptions, FilePriority, MainData, PeersResponse, RssRule, RssTree, TorrentFile, TorrentProperties, Tracker,
+  AddTorrentOptions, FilePriority, MainData, PeersResponse, RssRule, RssTree, SearchPlugin, SearchResults, SearchStatus, TorrentFile, TorrentProperties, Tracker,
 } from './types';
 
 const BASE: string = import.meta.env.VITE_API_BASE ?? 'api/v2';
@@ -136,4 +136,24 @@ export const api = {
     const text = (await request('torrents/add', { method: 'POST', body })).text();
     return parseAddResult(await text);
   },
+
+  // search (plugins run on the qBittorrent host)
+  searchPlugins: async (): Promise<SearchPlugin[]> => (await request('search/plugins')).json(),
+  searchStart: async (pattern: string, category: string, plugins: string): Promise<number> =>
+    ((await (await request('search/start', form({ pattern, category, plugins }))).json()) as { id: number }).id,
+  /** with no id: every search the server still holds */
+  searchStatus: async (id?: number): Promise<SearchStatus[]> =>
+    (await request(`search/status${id === undefined ? '' : `?id=${id}`}`)).json(),
+  searchResults: async (id: number, offset: number, limit = 500): Promise<SearchResults> =>
+    (await request(`search/results?id=${id}&limit=${limit}&offset=${offset}`)).json(),
+  searchStop: (id: number) => request('search/stop', form({ id })),
+  searchDelete: (id: number) => request('search/delete', form({ id })),
+  searchEnablePlugin: (names: string[], enable: boolean) =>
+    request('search/enablePlugin', form({ names: names.join('|'), enable })),
+  searchInstallPlugin: (sources: string[]) => request('search/installPlugin', form({ sources: sources.join('|') })),
+  searchUninstallPlugin: (names: string[]) => request('search/uninstallPlugin', form({ names: names.join('|') })),
+  searchUpdatePlugins: () => request('search/updatePlugins', { method: 'POST' }),
+  /** lets the plugin fetch the .torrent itself, for sites whose links only the plugin can resolve */
+  searchDownload: (torrentUrl: string, pluginName: string) =>
+    request('search/downloadTorrent', form({ torrentUrl, pluginName })),
 };
