@@ -8,6 +8,8 @@ version's section and uses them as the GitHub release notes.
 
 ## Unreleased
 
+## 2026.11.7 - 2026-11-15
+
 ### Added
 - MIT license.
 - Documentation site for Read the Docs (MkDocs), built from `docs/` and the changelog.
