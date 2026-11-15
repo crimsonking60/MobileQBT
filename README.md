@@ -9,7 +9,7 @@ actions, add by magnet / URL / `.torrent` upload, per-torrent General, Trackers,
 priorities) and Speed tabs, alt-speed toggle, RSS (feeds, articles, auto-download rules with match preview), settings, category/tag
 management, keyboard shortcuts, notifications, light/dark theme.
 
-See the **[user guide](docs/guide.md)** for Docker setup, authentication, HTTPS and all features.
+See the **[user guide](docs/guide.md)** (also built for Read the Docs) for Docker setup, authentication, HTTPS and all features.
 
 Targets qBittorrent **5.x only** (uses the `stop`/`start` endpoints). One deployment per qBittorrent server.
 

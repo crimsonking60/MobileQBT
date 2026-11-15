@@ -8,6 +8,8 @@ on:
     paths-ignore:
       - '**.md'
       - 'docs/**'
+      - 'mkdocs.yml'
+      - '.readthedocs.yaml'
       - 'tests/**'
   workflow_dispatch:
 

@@ -1,0 +1,29 @@
+site_name: MobileQBT
+site_description: A mobile-first admin UI for qBittorrent 5.x
+repo_url: https://github.com/crimsonking60/MobileQBT
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: light blue
+      toggle: { icon: material/weather-night, name: Switch to dark mode }
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: light blue
+      toggle: { icon: material/weather-sunny, name: Switch to light mode }
+  features:
+    - navigation.sections
+    - content.code.copy
+    - toc.follow
+
+plugins:
+  - search
+  - include-markdown
+
+nav:
+  - Home: index.md
+  - User guide: guide.md
+  - Changelog: changelog.md

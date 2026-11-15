@@ -64,7 +64,7 @@ services:
       - "8081:80"
 ```
 
-A ready-to-copy file is in the repository root as [`compose.example.yml`](../compose.example.yml).
+A ready-to-copy file is in the repository root as [`compose.example.yml`](https://github.com/crimsonking60/MobileQBT/blob/main/compose.example.yml).
 
 ### The one setting: `QBT_URL`
 
@@ -140,7 +140,7 @@ docker run -d -p 8081:80 -e QBT_URL=http://qbittorrent:8080 mobileqbt
 ### Without Docker
 
 Build with `npm ci && npx vite build`, serve `dist/` as static files, and proxy `/api/` to qBittorrent.
-[`docker/default.conf.template`](../docker/default.conf.template) is a complete nginx config to copy;
+[`docker/default.conf.template`](https://github.com/crimsonking60/MobileQBT/blob/main/docker/default.conf.template) is a complete nginx config to copy;
 substitute your qBittorrent address for `${QBT_URL}`.
 
 ## 3. Authentication
