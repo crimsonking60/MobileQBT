@@ -1,5 +1,6 @@
 import type { Torrent } from '../api/types';
 import { matchStatus, type StatusFilter } from '../format';
+import { nameMatcher } from '../search';
 import { sync } from './sync.svelte';
 
 export type SortKey = 'added_on' | 'name' | 'progress' | 'dlspeed' | 'upspeed' | 'size' | 'ratio' | 'eta';
@@ -31,12 +32,12 @@ class ViewState {
   scrollTop = 0;
 
   visible = $derived.by<Torrent[]>(() => {
-    const q = this.search.trim().toLowerCase();
+    const matches = nameMatcher(this.search);
     const list = Object.values(sync.data.torrents).filter((t) => {
       if (!matchStatus(t, this.status)) return false;
       if (this.category !== null && t.category !== this.category) return false;
       if (this.tag !== null && !t.tags.split(',').map((s) => s.trim()).includes(this.tag)) return false;
-      return !q || t.name.toLowerCase().includes(q);
+      return matches(t.name);
     });
     const k = this.sortKey;
     const dir = this.sortDesc ? -1 : 1;
