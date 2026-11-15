@@ -9,6 +9,8 @@ actions, add by magnet / URL / `.torrent` upload, per-torrent General, Trackers,
 priorities) and Speed tabs, alt-speed toggle, RSS (feeds, articles, auto-download rules with match preview), settings, category/tag
 management, keyboard shortcuts, notifications, light/dark theme.
 
+See the **[user guide](docs/guide.md)** for Docker setup, authentication, HTTPS and all features.
+
 Targets qBittorrent **5.x only** (uses the `stop`/`start` endpoints). One deployment per qBittorrent server.
 
 ## Deploy
@@ -73,7 +75,7 @@ is an easy way to get a trusted certificate without opening any ports.
 
 Versions are calendar based, `YYYY.MM.N`, where N counts releases within the month (`2026.11.1`,
 `2026.11.2`, then `2026.12.1`). The [release workflow](.github/workflows/release.yml) runs on every push to
-`main` (except docs- and test-only changes): it type-checks and runs the unit tests, builds the multi-arch
+`main` (except changes that only touch docs, Markdown files or tests): it type-checks and runs the unit tests, builds the multi-arch
 image, pushes it to `ghcr.io` as both the version and `latest`, then tags that commit and creates a GitHub
 release with generated notes. Nothing is tagged if the checks or the build fail. It can also be started by
 hand from the Actions tab.
