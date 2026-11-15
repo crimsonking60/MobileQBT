@@ -34,7 +34,7 @@ class Router {
   open(hash: string, tab: Tab = 'general', replace = false) {
     const url = `#/torrent/${hash}/${tab}`;
     if (replace || this.torrent) history.replaceState(null, '', url);
-    else { location.hash = url; this.#pushed = true; }
+    else { history.pushState(null, '', url); this.#pushed = true; }
     Object.assign(this, { torrent: hash, tab });
   }
 
@@ -45,7 +45,7 @@ class Router {
   }
 
   openRss() {
-    location.hash = '#/rss';
+    history.pushState(null, '', '#/rss');
     this.#pushed = true;
     Object.assign(this, { torrent: null, rss: true });
   }
