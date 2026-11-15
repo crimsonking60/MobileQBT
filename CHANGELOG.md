@@ -9,6 +9,7 @@ version's section and uses them as the GitHub release notes.
 ## Unreleased
 
 ### Added
+- MIT license.
 - Documentation site for Read the Docs (MkDocs), built from `docs/` and the changelog.
 
 ## 2026.11.6 - 2026-11-15

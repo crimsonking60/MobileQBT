@@ -111,3 +111,7 @@ First start of the dev container: it generates a random WebUI password. The comp
 To try the alt-WebUI build locally, the compose file already mounts `release/mobileqbt-webui` at
 `/webui`; run `npm run package`, then set the alternative WebUI path to `/webui` in the dev instance's
 options (or via `app/setPreferences`).
+
+## License
+
+[MIT](LICENSE)
