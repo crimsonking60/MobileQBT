@@ -7,7 +7,7 @@ RUN npm ci
 COPY . .
 RUN npx vite build
 
-FROM nginx:1.27-alpine
+FROM nginx:1.29-alpine
 # the official image envsubsts /etc/nginx/templates/*.template at start and sources *.envsh first
 COPY docker/default.conf.template /etc/nginx/templates/default.conf.template
 COPY docker/15-qbt.envsh /docker-entrypoint.d/15-qbt.envsh
