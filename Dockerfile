@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # the app is static, so build on the runner's own architecture and only copy the result into each target image
-FROM --platform=$BUILDPLATFORM node:22-alpine AS build
+FROM --platform=$BUILDPLATFORM node:26-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
