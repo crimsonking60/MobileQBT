@@ -40,6 +40,9 @@ export interface ServerState {
   up_info_speed: number;
   dl_info_data: number;
   up_info_data: number;
+  alltime_dl: number;
+  alltime_ul: number;
+  global_ratio: string;
   dl_rate_limit: number;
   up_rate_limit: number;
   free_space_on_disk: number;

@@ -8,6 +8,9 @@ version's section and uses them as the GitHub release notes.
 
 ## Unreleased
 
+### Added
+- Session and all-time downloaded/uploaded totals and the global ratio, at the bottom of the menu.
+
 ## 2026.11.8 - 2026-11-15
 
 ### Added

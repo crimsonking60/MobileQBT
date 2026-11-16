@@ -264,6 +264,9 @@ Under the search box: connection state (green connected, amber firewalled, red d
 download and upload speed, free disk space (on wider screens), and the **Alt speed** button, which toggles
 qBittorrent's alternative speed limits (it turns amber while on).
 
+The data transferred this session, the all-time totals and the global share ratio are at the bottom of the
+Menu (⋮) sheet.
+
 ### Selecting and acting
 
 - **Long-press** a row (or press `x` / Space on a keyboard) to start selecting. Tap more rows to add them,
